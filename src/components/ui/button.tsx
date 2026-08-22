@@ -1,17 +1,38 @@
-import type { ButtonHTMLAttributes } from "react";
+import type { ReactNode } from "react";
 
-import { cn } from "@/lib/utils";
+// Notwendig, für Typen der Parameterliste; Unterscheidung von Typ und Logik
+interface ButtonProps {
+	color?: string;
+	children?: ReactNode; // Optional property to allow developers to include another ReactNode or text on top of the button.
+	height?: string;
+	width?: string;
+	onClick: () => void;
+	radius?: string;
+	padding?: string;
+}
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
-
-export function Button({ className, ...props }: ButtonProps) {
+// color ist optional, falls kein Wert zugewiesen wird, nimm "#de483a"
+export function Button({
+	color = "#de483a",
+	children,
+	height,
+	width,
+	onClick,
+	radius = "0.5rem",
+	padding = "0.5rem",
+}: ButtonProps) {
 	return (
 		<button
-			className={cn(
-				"inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50",
-				className,
-			)}
-			{...props}
-		/>
+			onClick={onClick}
+			style={{
+				backgroundColor: color,
+				borderRadius: radius,
+				height,
+				width,
+				padding,
+			}}
+		>
+			{children}
+		</button>
 	);
 }

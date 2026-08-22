@@ -6,10 +6,20 @@ import { AddButton } from "@/components/ui/add-button";
 function App() {
 	const [tasks, setTasks] = useState<TaskDto[]>([]);
 
-	useEffect(() => {
+	function loadTasks() {
 		fetch("http://localhost:3000/tasks")
-			.then((response) => response.json())
-			.then((data) => setTasks(data));
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(`Fehler beim Laden der Tasks (Status ${response.status})`);
+				}
+				return response.json();
+			})
+			.then((data) => setTasks(data))
+			.catch((error) => console.error(error));
+	}
+
+	useEffect(() => {
+		loadTasks();
 	}, []);
 
 	return (
@@ -29,7 +39,7 @@ function App() {
 					</li>
 				))}
 			</ul>
-			<AddButton/>
+			<AddButton onTaskCreated={loadTasks} />
 		</div>
 	);
 }

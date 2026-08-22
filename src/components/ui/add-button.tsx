@@ -1,11 +1,22 @@
-import { Plus } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { TaskModal } from "@/components/ui/task-modal";
 
-import { Button } from "@/components/ui/button"
+interface AddButtonProps {
+	onTaskCreated: () => void;
+}
 
-export function AddButton() {
+export function AddButton({ onTaskCreated }: AddButtonProps) {
+	const [isOpen, setIsOpen] = useState(false);
+
 	return (
-		<Button className="h-8 w-8 rounded-lg bg-amber-400 text-gray-600 hover:bg-amber-400/80">
-			<Plus />
-		</Button>
-	)
+		<>
+			<Button onClick={() => setIsOpen(true)}>add +</Button>
+			<TaskModal
+				open={isOpen}
+				onClose={() => setIsOpen(false)}
+				onTaskCreated={onTaskCreated}
+			/>
+		</>
+	);
 }
