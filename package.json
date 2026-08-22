@@ -1,28 +1,18 @@
 {
-	"name": "frontend",
+	"name": "practice-multithreading",
+	"version": "1.0.0",
 	"private": true,
-	"version": "0.0.0",
-	"type": "module",
 	"scripts": {
-		"dev": "vite",
-		"build": "tsc -b && vite build",
-		"lint": "oxlint",
-		"preview": "vite preview"
+		"start": "npm run start --workspace=backend",
+		"start:server": "npm run start:server --workspace=backend",
+		"dev": "npm run dev --workspace=frontend"
 	},
-	"dependencies": {
-		"@tailwindcss/vite": "^4.3.3",
-		"react": "^19.2.8",
-		"react-dom": "^19.2.8",
-		"shared": "*",
-		"tailwindcss": "^4.3.3"
-	},
+	"workspaces": [
+		"backend",
+		"frontend",
+		"shared"
+	],
 	"devDependencies": {
-		"@types/node": "^24.13.3",
-		"@types/react": "^19.2.17",
-		"@types/react-dom": "^19.2.3",
-		"@vitejs/plugin-react": "^6.0.4",
-		"oxlint": "^1.75.0",
-		"typescript": "~6.0.2",
-		"vite": "^8.2.0"
+		"prettier": "^3.9.6"
 	}
 }
