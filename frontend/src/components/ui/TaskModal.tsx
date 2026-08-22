@@ -1,4 +1,4 @@
-import { Modal } from "@/components/ui/modal";
+import { Modal } from "@/components/ui/Modal";
 import { useState } from "react";
 import type { ChangeEvent, SubmitEvent } from "react";
 

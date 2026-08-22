@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { TaskModal } from "@/components/ui/task-modal";
+import { Button } from "@/components/ui/Button";
+import { TaskModal } from "@/components/ui/TaskModal";
 
 interface AddButtonProps {
 	onTaskCreated: () => void;

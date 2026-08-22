@@ -6,7 +6,7 @@
 	"scripts": {
 		"build": "tsc",
 		"start": "tsc && node dist/index.js",
-		"start:server": "tsc && node dist/server.js"
+		"start:server": "tsc && node dist/Server.js"
 	},
 	"dependencies": {
 		"cors": "^2.8.6",

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { TaskDto } from "shared";
-import { AddButton } from "@/components/ui/add-button";
+import { AddButton } from "@/components/ui/AddButton";
 
 /** Treibender Client der REST-API: ruft beim Mounten `GET /tasks` ab und rendert die Liste. */
 function App() {
