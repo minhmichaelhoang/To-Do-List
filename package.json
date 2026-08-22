@@ -5,7 +5,9 @@
 	"scripts": {
 		"start": "npm run start --workspace=backend",
 		"start:server": "npm run start:server --workspace=backend",
-		"dev": "npm run dev --workspace=frontend"
+		"dev": "npm run dev --workspace=frontend",
+		"check:naming": "node scripts/check-file-naming.mjs",
+		"prepare": "husky"
 	},
 	"workspaces": [
 		"backend",
@@ -13,6 +15,7 @@
 		"shared"
 	],
 	"devDependencies": {
+		"husky": "^9.1.7",
 		"prettier": "^3.9.6"
 	}
 }
