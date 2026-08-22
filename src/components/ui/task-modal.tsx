@@ -1,5 +1,6 @@
 import { Modal } from "@/components/ui/modal";
-import {useState} from "react";
+import { useState } from "react";
+import type { ChangeEvent, SubmitEvent } from "react";
 
 interface TaskModalProps {
 	open: boolean;
@@ -10,9 +11,10 @@ interface TaskModalProps {
 export function TaskModal({ open, onClose, onTaskCreated }: TaskModalProps) {
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
+	const [project, setProject] = useState("");
 	const [submitError, setSubmitError] = useState("");
 
-	function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
+	function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
 		const value = e.target.value;
 		setTitle(value);
 		if (value.length === 0 || value.length > 500) {
@@ -21,7 +23,7 @@ export function TaskModal({ open, onClose, onTaskCreated }: TaskModalProps) {
 		}
 	}
 
-	function handleDescriptionChange(e: React.ChangeEvent<HTMLInputElement>) {
+	function handleDescriptionChange(e: ChangeEvent<HTMLInputElement>) {
 		const value = e.target.value;
 		setDescription(value);
 		if (value.length > 2000) {
@@ -29,7 +31,15 @@ export function TaskModal({ open, onClose, onTaskCreated }: TaskModalProps) {
 		}
 	}
 
-	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+	function handleProjectChange(e: ChangeEvent<HTMLInputElement>) {
+		const value = e.target.value;
+		setProject(value);
+		if (value.length > 50) {
+			setProject("Too long");
+		}
+	}
+
+	async function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
 		e.preventDefault();
 		setSubmitError("");
 
@@ -41,7 +51,8 @@ export function TaskModal({ open, onClose, onTaskCreated }: TaskModalProps) {
 			});
 
 			if (!response.ok) {
-				throw new Error(`Fehler beim Erstellen der Aufgabe (Status ${response.status})`);
+				setSubmitError(`Fehler beim Erstellen der Aufgabe (Status ${response.status})`);
+				return;
 			}
 
 			setTitle("");
@@ -67,6 +78,12 @@ export function TaskModal({ open, onClose, onTaskCreated }: TaskModalProps) {
 					placeholder="Description"
 					value={description}
 					onChange={e => handleDescriptionChange(e)}
+				/>
+				<input
+					type="text"
+					placeholder="Project"
+					value={project}
+					onChange={e => handleProjectChange(e)}
 				/>
 				<button type="submit">Submit</button>
 				{submitError && <p style={{ color: "red" }}>{submitError}</p>}

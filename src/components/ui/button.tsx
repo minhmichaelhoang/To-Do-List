@@ -9,6 +9,10 @@ interface ButtonProps {
 	onClick: () => void;
 	radius?: string;
 	padding?: string;
+	margin?: string;
+	display?: string;
+	justifyContent?: string;
+	alignItems?: string;
 }
 
 // color ist optional, falls kein Wert zugewiesen wird, nimm "#de483a"
@@ -20,6 +24,10 @@ export function Button({
 	onClick,
 	radius = "0.5rem",
 	padding = "0.5rem",
+	margin = "0.5rem",
+	display = "flex",
+	justifyContent = "center",
+	alignItems = "center"
 }: ButtonProps) {
 	return (
 		<button
@@ -30,6 +38,10 @@ export function Button({
 				height,
 				width,
 				padding,
+				margin,
+				display,
+				justifyContent,
+				alignItems
 			}}
 		>
 			{children}
