@@ -1,7 +1,13 @@
 import { readdirSync, statSync } from "node:fs";
 import { join, extname, basename } from "node:path";
 
-const roots = ["backend/src", "backend/test", "frontend/src", "shared/src"];
+const roots = [
+	"backend/src",
+	"backend/test",
+	"frontend/src",
+	"frontend/test",
+	"shared/src",
+];
 
 // Diese Dateinamen sind durch Node/Vite-Konventionen (Modulauflösung,
 // index.html-Referenz) vorgegeben und bleiben bewusst klein geschrieben.
