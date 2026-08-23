@@ -1,1 +1,2 @@
 npm run check:docs
+npm run check:coverage

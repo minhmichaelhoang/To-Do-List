@@ -3,6 +3,9 @@ import jsdoc from "eslint-plugin-jsdoc";
 
 export default [
 	{
+		ignores: ["coverage/**"],
+	},
+	{
 		files: [
 			"backend/src/**/*.ts",
 			"frontend/src/**/*.{ts,tsx}",

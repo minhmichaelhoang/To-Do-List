@@ -1,7 +1,7 @@
 import { readdirSync, statSync } from "node:fs";
 import { join, extname, basename } from "node:path";
 
-const roots = ["backend/src", "frontend/src", "shared/src"];
+const roots = ["backend/src", "backend/test", "frontend/src", "shared/src"];
 
 // Diese Dateinamen sind durch Node/Vite-Konventionen (Modulauflösung,
 // index.html-Referenz) vorgegeben und bleiben bewusst klein geschrieben.
@@ -27,7 +27,13 @@ function walk(dir, violations) {
 			continue;
 		}
 
-		const name = basename(entry, ext);
+		let name = basename(entry, ext);
+		for (const suffix of [".test", ".spec"]) {
+			if (name.endsWith(suffix)) {
+				name = name.slice(0, -suffix.length);
+				break;
+			}
+		}
 		if (!pascalCase.test(name)) {
 			violations.push(fullPath);
 		}

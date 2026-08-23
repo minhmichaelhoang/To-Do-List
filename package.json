@@ -8,6 +8,8 @@
 		"dev": "npm run dev --workspace=frontend",
 		"check:naming": "node scripts/check-file-naming.mjs",
 		"check:docs": "eslint .",
+		"test": "vitest run",
+		"check:coverage": "vitest run --coverage",
 		"prepare": "husky"
 	},
 	"workspaces": [
@@ -17,9 +19,11 @@
 	],
 	"devDependencies": {
 		"@typescript-eslint/parser": "^8.67.0",
+		"@vitest/coverage-v8": "^4.1.11",
 		"eslint": "^10.9.0",
 		"eslint-plugin-jsdoc": "^64.2.1",
 		"husky": "^9.1.7",
-		"prettier": "^3.9.6"
+		"prettier": "^3.9.6",
+		"vitest": "^4.1.11"
 	}
 }
