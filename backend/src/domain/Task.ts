@@ -11,10 +11,10 @@ export class Task {
 	private readonly _id: string;
 
 	constructor(
-		id: string = randomUUID(),
 		private _title: string,
 		private _description: string,
-		private _project: string
+		private _project: string,
+		id: string = randomUUID() // Attribut ist ein Default-Wert und  wird nicht als Parameter übergeben, daher ist das am Ende
 	) {
 		this._id = id;
 	}

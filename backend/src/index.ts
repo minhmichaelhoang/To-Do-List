@@ -10,8 +10,8 @@ import { AddTask } from "./application/AddTask";
 
 async function main() {
 	const taskRepository = new InMemoryTaskRepository([
-		new Task("Hausaufgaben machen", "Mathe Seite 3, Aufgabe 4"),
-		new Task("Einkaufen", "Milch, Brot, Eier"),
+		new Task("Hausaufgaben machen", "Mathe Seite 3, Aufgabe 4", "Schule"),
+		new Task("Einkaufen", "Milch, Brot, Eier", "Alltag"),
 	]);
 
 	const listTasks = new ListTasks(taskRepository);
@@ -23,7 +23,7 @@ async function main() {
 	});
 
 	const addTask = new AddTask(taskRepository);
-	await addTask.execute("Zähne putzen", "Mindestens 3 Minuten");
+	await addTask.execute("Zähne putzen", "Mindestens 3 Minuten", "Alltag");
 
 	// ist immer ein Snapshot
 	const tasks2 = await listTasks.execute();

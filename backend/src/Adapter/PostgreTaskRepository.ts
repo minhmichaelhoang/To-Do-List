@@ -16,7 +16,7 @@ class PostgreTaskRepository implements TaskRepository {
 			"SELECT * " + "FROM task " + "ORDER BY title ASC;",
 		);
 		return result.rows.map(
-			(row) => new Task(row.id, row.title, row.description, row.project),
+			(row) => new Task(row.title, row.description, row.project, row.id),
 		);
 	}
 
@@ -29,7 +29,7 @@ class PostgreTaskRepository implements TaskRepository {
 			[`%${letters}%`],
 		);
 		return result.rows.map(
-			(row) => new Task(row.id, row.title, row.description, row.project),
+			(row) => new Task(row.title, row.description, row.project, row.id),
 		);
 	}
 

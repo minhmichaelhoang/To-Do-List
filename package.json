@@ -7,6 +7,7 @@
 		"start:server": "npm run start:server --workspace=backend",
 		"dev": "npm run dev --workspace=frontend",
 		"check:naming": "node scripts/check-file-naming.mjs",
+		"check:docs": "eslint .",
 		"prepare": "husky"
 	},
 	"workspaces": [
@@ -15,6 +16,9 @@
 		"shared"
 	],
 	"devDependencies": {
+		"@typescript-eslint/parser": "^8.67.0",
+		"eslint": "^10.9.0",
+		"eslint-plugin-jsdoc": "^64.2.1",
 		"husky": "^9.1.7",
 		"prettier": "^3.9.6"
 	}

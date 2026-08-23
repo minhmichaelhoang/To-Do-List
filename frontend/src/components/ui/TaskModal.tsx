@@ -8,6 +8,14 @@ interface TaskModalProps {
 	onTaskCreated: () => void;
 }
 
+/**
+ * Formular zum Anlegen einer neuen Aufgabe, gerendert innerhalb von `Modal`.
+ * Hält Titel/Beschreibung/Projekt als Controlled-Components (`useState` pro
+ * Feld) und schickt sie bei Submit per `POST /tasks` ans Backend. Nur bei
+ * erfolgreicher Antwort werden Felder zurückgesetzt, `onTaskCreated`
+ * aufgerufen und das Modal geschlossen – bei einem Fehler bleibt das
+ * Formular mit der Eingabe und einer Fehlermeldung (`submitError`) offen.
+ */
 export function TaskModal({ open, onClose, onTaskCreated }: TaskModalProps) {
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");

@@ -12,20 +12,22 @@ import { InMemoryTaskRepository } from "./Adapter/InMemoryTaskRepository";
 import { ListTasks } from "./application/ListTasks";
 import { AddTask } from "./application/AddTask";
 import { createTaskRouter } from "./http/TaskRouter";
+import {DeleteTask} from "./application/DeleteTask";
 
 
 const taskRepository = new InMemoryTaskRepository([
-	new Task("Hausaufgaben machen", "Mathe Seite 3, Aufgabe 4"),
-	new Task("Einkaufen", "Milch, Brot, Eier"),
+	new Task("Hausaufgaben machen", "Mathe Seite 3, Aufgabe 4", "Schule"),
+	new Task("Einkaufen", "Milch, Brot, Eier", "Alltag"),
 ]);
 
 const listTasks = new ListTasks(taskRepository);
 const addTask = new AddTask(taskRepository);
+const deleteTask = new DeleteTask(taskRepository);
 
 const app = express();
 app.use(cors()); // erlaubt Requests vom Vite-Dev-Server (andere Origin: Port 5173 statt 3000)
 app.use(express.json()); // parst JSON-Request-Bodies nach req.body (für POST /tasks nötig)
-app.use(createTaskRouter(listTasks, addTask));
+app.use(createTaskRouter(listTasks, addTask, deleteTask));
 
 const port = 3000;
 app.listen(port, () => {

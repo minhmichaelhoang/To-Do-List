@@ -15,7 +15,14 @@ interface ButtonProps {
 	alignItems?: string;
 }
 
-// color ist optional, falls kein Wert zugewiesen wird, nimm "#de483a"
+/**
+ * Einfacher, wiederverwendbarer Button ohne CSS-Framework/Library –
+ * Styling läuft komplett über Inline-Style-Props (`color`, `padding`, ...)
+ * mit sinnvollen Defaults, statt über Tailwind-Klassen oder eine
+ * Variant-Bibliothek wie `cva`. `height`/`width` bleiben standardmäßig
+ * `undefined`, damit sich die Größe nach Inhalt + `padding` richtet, statt
+ * fest vorgegeben zu sein.
+ */
 export function Button({
 	color = "#de483a",
 	children,

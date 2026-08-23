@@ -2,6 +2,7 @@ import { Router } from "express";
 import { TaskDto } from "shared";
 import { ListTasks } from "../application/ListTasks";
 import { AddTask } from "../application/AddTask";
+import {DeleteTask} from "../application/DeleteTask";
 
 /**
  * Driving Adapter (Primary Adapter) für HTTP. Übersetzt eingehende
@@ -19,7 +20,7 @@ export function createTaskRouter(
 ): Router {
 	const router = Router();
 
-	router.get("/tasks", async (req, res) => {
+	router.get("/tasks", async (_req, res) => {
 		const tasks = await listTasks.execute();
 		res.json(
 			tasks.map((task): TaskDto => ({
@@ -32,10 +33,16 @@ export function createTaskRouter(
 	});
 
 	router.post("/tasks", async (req, res) => {
-		const { title, description } = req.body;
-		await addTask.execute(title, description);
+		const { title, description, project} = req.body;
+		await addTask.execute(title, description, project);
 		res.status(201).send();
 	});
+
+	router.delete("/tasks/:id", async (req, res) => {
+		const { id } = req.params;
+		await deleteTask.execute(id);
+		res.status(204).send();
+	})
 
 	return router;
 }
