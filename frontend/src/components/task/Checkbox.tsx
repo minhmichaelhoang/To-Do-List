@@ -1,11 +1,18 @@
 import { Button } from "@/components/ui/Button.tsx"
 import {useState} from "react";
 
-interface CheckboxProps {
+export interface CheckboxProps {
 	onBoxChecked: () => void;
 	taskId: string;
 }
 
+/**
+ * Ein Button, der eine Aufgabe nach ID löscht.
+ *
+ * @param props die Property
+ * @param props.onBoxChecked die Funktion, die zusätzlich bei einem Klicken ausgeführt wird
+ * @param props.taskId die ID der Task
+ */
 export function Checkbox({onBoxChecked, taskId}: CheckboxProps) {
 	const [deleteError, setDeleteError] = useState("");
 

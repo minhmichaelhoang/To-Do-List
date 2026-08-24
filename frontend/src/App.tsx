@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { TaskDto } from "shared";
 import { AddButton } from "@/components/task/AddButton";
-import { Checkbox } from "@/components/task/Checkbox";
+import {TaskItem} from "@/components/task/TaskItem.tsx";
 
 /** Treibender Client der REST-API: ruft beim Mounten `GET /tasks` ab und rendert die Liste. */
 function App() {
@@ -31,14 +31,8 @@ function App() {
 				{tasks.map((task) => (
 					<li
 						key={task.id}
-						className="box flex items-center justify-between rounded-md border border-[#0d0d0d]"
 					>
-						<div>
-							<Checkbox onBoxChecked={loadTasks} taskId={task.id} />
-							<strong>{task.title}</strong>
-							<span>: {task.description}</span>
-							<span>, {task.project}</span>
-						</div>
+						<TaskItem onTaskDeleted={loadTasks} task={task} />
 					</li>
 				))}
 			</ul>

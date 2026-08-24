@@ -45,13 +45,13 @@ export function Button({
 				backgroundColor: color,
 				borderRadius: radius,
 				border: borderColor ? `1px solid ${borderColor}` : "none",
-				height: height,
-				width: width,
-				padding: padding,
-				margin: margin,
-				display: display,
-				justifyContent: justifyContent,
-				alignItems: alignItems
+				height,
+				width,
+				padding,
+				margin,
+				display,
+				justifyContent,
+				alignItems,
 			}}
 		>
 			{children}

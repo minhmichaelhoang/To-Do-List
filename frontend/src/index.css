@@ -1,10 +1,20 @@
 @import "tailwindcss";
 
+:root {
+	--primary: #f9f9f9;
+}
+
 body {
 	background: #1f1f1f;
 }
 
-.box {
+.container {
+	display: flex;
 	background: #262626;
-	color: #f9f9f9;
+	color: var(--primary);
+	border: 1px solid var(--primary);
+	border-radius: 1rem;
+	padding: 0.5rem;
+	margin: 1rem;
 }
+
