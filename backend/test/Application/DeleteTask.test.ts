@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { DeleteTask } from "../../src/application/DeleteTask";
-import { AddTask } from "../../src/application/AddTask";
+import { DeleteTask } from "../../src/Application/DeleteTask";
+import { AddTask } from "../../src/Application/AddTask";
 import { InMemoryTaskRepository } from "../../src/Adapter/InMemoryTaskRepository";
 
 describe("DeleteTask", () => {

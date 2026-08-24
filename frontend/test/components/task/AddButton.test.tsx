@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { AddButton } from "../../../src/components/ui/AddButton";
+import { AddButton } from "../../../src/components/task/AddButton";
 
 describe("AddButton", () => {
 	it("zeigt das TaskModal nicht, bevor der Button geklickt wurde", () => {

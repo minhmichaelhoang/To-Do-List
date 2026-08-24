@@ -1,4 +1,4 @@
-import {TaskRepository} from "../ports/TaskRepository";
+import {TaskRepository} from "../Ports/TaskRepository";
 
 /**
  * Application Service / Use Case. Löscht einen Task anhand seiner ID über

@@ -55,7 +55,7 @@ export function TaskModal({ open, onClose, onTaskCreated }: TaskModalProps) {
 			const response = await fetch("http://localhost:3000/tasks", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ title, description }),
+				body: JSON.stringify({ title, description, project }),
 			});
 
 			if (!response.ok) {
@@ -65,6 +65,7 @@ export function TaskModal({ open, onClose, onTaskCreated }: TaskModalProps) {
 
 			setTitle("");
 			setDescription("");
+			setProject("");
 			onTaskCreated();
 			onClose();
 		} catch (error) {

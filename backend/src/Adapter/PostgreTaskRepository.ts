@@ -1,5 +1,5 @@
-import { TaskRepository } from "../ports/TaskRepository";
-import { Task } from "../domain/Task";
+import { TaskRepository } from "../Ports/TaskRepository";
+import { Task } from "../Domain/Task";
 import { Pool } from "pg";
 
 /**

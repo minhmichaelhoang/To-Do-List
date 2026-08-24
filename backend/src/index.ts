@@ -3,10 +3,10 @@
  * dieselben Bausteine wie `server.ts` (nur ohne HTTP), gibt das Ergebnis
  * von `ListTasks` direkt auf der Konsole aus.
  */
-import { Task } from "./domain/Task";
+import { Task } from "./Domain/Task";
 import { InMemoryTaskRepository } from "./Adapter/InMemoryTaskRepository";
-import { ListTasks } from "./application/ListTasks";
-import { AddTask } from "./application/AddTask";
+import { ListTasks } from "./Application/ListTasks";
+import { AddTask } from "./Application/AddTask";
 
 async function main() {
 	const taskRepository = new InMemoryTaskRepository([

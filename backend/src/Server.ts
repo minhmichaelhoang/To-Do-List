@@ -7,12 +7,12 @@
  */
 import express from "express";
 import cors from "cors";
-import { Task } from "./domain/Task";
+import { Task } from "./Domain/Task";
 import { InMemoryTaskRepository } from "./Adapter/InMemoryTaskRepository";
-import { ListTasks } from "./application/ListTasks";
-import { AddTask } from "./application/AddTask";
-import { createTaskRouter } from "./http/TaskRouter";
-import {DeleteTask} from "./application/DeleteTask";
+import { ListTasks } from "./Application/ListTasks";
+import { AddTask } from "./Application/AddTask";
+import { createTaskRouter } from "./Http/TaskRouter";
+import {DeleteTask} from "./Application/DeleteTask";
 
 
 const taskRepository = new InMemoryTaskRepository([

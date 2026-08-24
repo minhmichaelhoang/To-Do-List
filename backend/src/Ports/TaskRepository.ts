@@ -1,4 +1,4 @@
-import { Task } from "../domain/Task";
+import { Task } from "../Domain/Task";
 
 /**
  * Driven Port (Secondary Port). Von der Application-Schicht definierter

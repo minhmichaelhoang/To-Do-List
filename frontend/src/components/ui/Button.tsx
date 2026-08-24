@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 // Notwendig, für Typen der Parameterliste; Unterscheidung von Typ und Logik
 interface ButtonProps {
 	color?: string;
+	borderColor?: string;
 	children?: ReactNode; // Optional property to allow developers to include another ReactNode or text on top of the button.
 	height?: string;
 	width?: string;
@@ -25,6 +26,7 @@ interface ButtonProps {
  */
 export function Button({
 	color = "#de483a",
+	borderColor,
 	children,
 	height,
 	width,
@@ -42,13 +44,14 @@ export function Button({
 			style={{
 				backgroundColor: color,
 				borderRadius: radius,
-				height,
-				width,
-				padding,
-				margin,
-				display,
-				justifyContent,
-				alignItems
+				border: borderColor ? `1px solid ${borderColor}` : "none",
+				height: height,
+				width: width,
+				padding: padding,
+				margin: margin,
+				display: display,
+				justifyContent: justifyContent,
+				alignItems: alignItems
 			}}
 		>
 			{children}

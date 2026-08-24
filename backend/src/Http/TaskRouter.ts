@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { TaskDto } from "shared";
-import { ListTasks } from "../application/ListTasks";
-import { AddTask } from "../application/AddTask";
-import {DeleteTask} from "../application/DeleteTask";
+import { ListTasks } from "../Application/ListTasks";
+import { AddTask } from "../Application/AddTask";
+import {DeleteTask} from "../Application/DeleteTask";
 
 /**
  * Driving Adapter (Primary Adapter) für HTTP. Übersetzt eingehende

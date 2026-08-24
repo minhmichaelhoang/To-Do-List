@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AddTask } from "../../src/application/AddTask";
+import { AddTask } from "../../src/Application/AddTask";
 import { InMemoryTaskRepository } from "../../src/Adapter/InMemoryTaskRepository";
 
 describe("AddTask", () => {
