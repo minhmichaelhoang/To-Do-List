@@ -22,7 +22,7 @@ export function TaskItem(
 	const[isOpen, setIsOpen] = useState(false);
 
 	return (
-		<div style={{ position: "relative", marginBottom: "1rem" }}>
+		<div style={{ position: "relative"}}>
 			<button
 				onClick={() => setIsOpen(true)}
 				className={"container foreground-button"}

@@ -24,7 +24,7 @@ export function AddButton() {
 						: "var(--accent)",
 				}}
 			>
-				Add new Task
+					Add new Task
 			</Button>
 			<CreateTaskModal
 				open={isOpen}

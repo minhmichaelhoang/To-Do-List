@@ -25,9 +25,13 @@ function App() {
 				To Do List
 			</h1>
 
-			{tasks.map((task) => (
-				<TaskItem task={task} />
-			))}
+			<ul className="space-y-3">
+				{tasks.map((task) => (
+					<li key={task.id}>
+						<TaskItem task={task} />
+					</li>
+				))}
+			</ul>
 
 			<div style={{ display: "flex", justifyContent: "center" }}>
 				<AddButton />

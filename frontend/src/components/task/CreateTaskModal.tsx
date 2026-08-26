@@ -88,6 +88,8 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 					flexDirection: "column",
 					margin: "auto",
 					gap: "1rem",
+					width: "100%",
+					minWidth: 0,
 
 				}}
 			>
@@ -96,7 +98,7 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 					placeholder="Title"
 					value={title}
 					onChange={e => handleTitleChange(e)}
-					style={{fontWeight: "bold"}}
+					style={{fontWeight: "bold", width: "100%", boxSizing: "border-box"}}
 					autoFocus
 				/>
 				<input
@@ -104,12 +106,14 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 					placeholder="Description"
 					value={description}
 					onChange={e => handleDescriptionChange(e)}
+					style={{ width: "100%", boxSizing: "border-box" }}
 				/>
 				<input
 					type="text"
 					placeholder="Project"
 					value={project}
 					onChange={e => handleProjectChange(e)}
+					style={{ width: "100%", boxSizing: "border-box" }}
 				/>
 				<button type="submit" style={{ alignSelf: "flex-end" }}>Submit</button>
 				{submitError && <p style={{ color: "red" }}>{submitError}</p>}

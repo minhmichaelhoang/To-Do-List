@@ -88,8 +88,8 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 			open={open}
 			onClose={onClose}
 			style={{
-				width: "33.2%",
-				height: "33.2%",
+				width: "20rem",
+				height: "12rem",
 				backgroundColor: "var(--accent-dark)",
 			}}
 		>
@@ -101,7 +101,8 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 					flexDirection: "column",
 					margin: "auto",
 					gap: "1rem",
-
+					width: "100%",
+					minWidth: 0,
 				}}
 			>
 				<input
@@ -110,8 +111,10 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 					value={title}
 					onChange={e => handleTitleChange(e)}
 					style={{
-						fontSize: "1.5rem",
+						fontSize: "var(--large-font-size)",
 						fontWeight: "bold",
+						width: "100%",
+						boxSizing: "border-box",
 					}}
 				/>
 				<input
@@ -119,12 +122,14 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 					placeholder="Description"
 					value={description}
 					onChange={e => handleDescriptionChange(e)}
+					style={{ width: "100%", boxSizing: "border-box" }}
 				/>
 				<input
 					type="text"
 					placeholder="Project"
 					value={project}
 					onChange={e => handleProjectChange(e)}
+					style={{ width: "100%", boxSizing: "border-box" }}
 				/>
 				<button
 					type="submit"
