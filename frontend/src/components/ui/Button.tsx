@@ -23,7 +23,7 @@ export function Button({ onClick, onMouseEnter, onMouseLeave, children, style }:
 			onMouseEnter={onMouseEnter}
 			onMouseLeave={onMouseLeave}
 			style={{
-				backgroundColor: "#de483a",
+				backgroundColor: "var(--accent)",
 				borderRadius: "0.5rem",
 				padding: "0.5rem",
 				margin: "0.5rem",

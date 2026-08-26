@@ -25,7 +25,7 @@ export function TaskItem(
 		<div style={{ position: 'relative'}}>
 			<button
 					onClick={() => setIsOpen(true)}
-					className={"container"}
+					className={"container foreground-button"}
 				>
 					<div
 						style={{
@@ -49,7 +49,7 @@ export function TaskItem(
 			<ViewTaskModal
 				open={isOpen}
 				onClose={() => setIsOpen(false)}
-				taskId={task.id}
+				task={task}
 			/>
 		</div>
 	)

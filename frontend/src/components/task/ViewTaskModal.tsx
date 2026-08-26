@@ -1,30 +1,44 @@
 import {Modal, type ModalProps} from "@/components/ui/Modal.tsx";
-import {type ChangeEvent, type SubmitEvent, useState} from "react";
+import {type ChangeEvent, type SubmitEvent, useEffect, useState} from "react";
 import { useTasks } from "@/context/TasksContext.tsx";
+import type { TaskDto } from "shared";
 
 interface TaskModalProps extends Pick<ModalProps, "open" | "onClose">{
-	taskId: string;
+	task: TaskDto;
 }
 
 /**
- * Formular für eine Aufgabe, gerendert innerhalb von `Modal`. Hält
- * Titel/Beschreibung/Projekt als Controlled-Components (`useState` pro
- * Feld) und schickt sie bei Submit per `POST /tasks` ans Backend. Nur bei
- * erfolgreicher Antwort werden Felder zurückgesetzt, `loadTasks` (aus dem
- * `TasksContext`) aufgerufen und das Modal geschlossen – bei einem Fehler
- * bleibt das Formular mit der Eingabe und einer Fehlermeldung (`submitError`) offen.
+ * Formular zum Bearbeiten einer bestehenden Aufgabe, gerendert innerhalb
+ * von `Modal`. Hält Titel/Beschreibung/Projekt als Controlled-Components
+ * (`useState` pro Feld); ein `useEffect` füllt sie jedes Mal, wenn das
+ * Modal geöffnet wird, mit den aktuellen Werten von `task` – nicht nur
+ * einmalig beim ersten Rendern, sonst würden nach einer erfolgreichen
+ * Bearbeitung beim erneuten Öffnen veraltete Werte angezeigt. Schickt die
+ * Werte bei Submit per `PUT /tasks/:id` ans Backend. Nur bei erfolgreicher
+ * Antwort werden `loadTasks` (aus dem `TasksContext`) aufgerufen und das
+ * Modal geschlossen – bei einem Fehler bleibt das Formular mit der
+ * Eingabe und einer Fehlermeldung (`submitError`) offen.
  */
-export function ViewTaskModal({open, onClose, taskId}:TaskModalProps) {
+export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 	const { loadTasks } = useTasks();
-	const [title, setTitle] = useState("");
-	const [description, setDescription] = useState("");
-	const [project, setProject] = useState("");
+	const [title, setTitle] = useState(task.title);
+	const [description, setDescription] = useState(task.description);
+	const [project, setProject] = useState(task.project);
 	const [submitError, setSubmitError] = useState("");
+
+	useEffect(() => {
+		if (open) {
+			setTitle(task.title);
+			setDescription(task.description);
+			setProject(task.project);
+			setSubmitError("");
+		}
+	}, [open, task]);
 
 	function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
 		const value = e.target.value;
 		setTitle(value);
-		if (value.length === 0 || value.length > 500) {
+		if (value.length > 500) {
 			setTitle("Title is too long");
 			// später ändern, dass ein Modal geöffnet wird mit der Anzeige und es wird gekappt und nicht weiter eingegeben
 		}
@@ -51,7 +65,7 @@ export function ViewTaskModal({open, onClose, taskId}:TaskModalProps) {
 		setSubmitError("");
 
 		try {
-			const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+			const response = await fetch(`http://localhost:3000/tasks/${task.id}`, {
 				method: "PUT",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ title, description, project }),
@@ -62,9 +76,6 @@ export function ViewTaskModal({open, onClose, taskId}:TaskModalProps) {
 				return;
 			}
 
-			setTitle("");
-			setDescription("");
-			setProject("");
 			loadTasks();
 			onClose();
 		} catch (error) {
@@ -73,12 +84,24 @@ export function ViewTaskModal({open, onClose, taskId}:TaskModalProps) {
 	}
 
 	return (
-		<Modal open={open} onClose={onClose}>
+		<Modal
+			open={open}
+			onClose={onClose}
+			style={{
+				width: "33.2%",
+				height: "33.2%",
+				backgroundColor: "var(--accent-dark)",
+			}}
+		>
 			<form
 				onSubmit={handleSubmit}
 				style={{
-					width: "66.8%",
-					height: "66.8%",
+					display: "flex",
+					justifyContent: "center",
+					flexDirection: "column",
+					margin: "auto",
+					gap: "1rem",
+
 				}}
 			>
 				<input
@@ -86,6 +109,10 @@ export function ViewTaskModal({open, onClose, taskId}:TaskModalProps) {
 					placeholder="Title"
 					value={title}
 					onChange={e => handleTitleChange(e)}
+					style={{
+						fontSize: "1.5rem",
+						fontWeight: "bold",
+					}}
 				/>
 				<input
 					type="text"
@@ -99,7 +126,12 @@ export function ViewTaskModal({open, onClose, taskId}:TaskModalProps) {
 					value={project}
 					onChange={e => handleProjectChange(e)}
 				/>
-				<button type="submit">Submit</button>
+				<button
+					type="submit"
+					style={{alignSelf: "flex-end",}}
+				>
+					Submit
+				</button>
 				{submitError && <p style={{ color: "red" }}>{submitError}</p>}
 			</form>
 		</Modal>

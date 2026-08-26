@@ -30,8 +30,27 @@ describe("AddButton", () => {
 			</TasksProvider>,
 		);
 
-		await userEvent.click(screen.getByText("+"));
+		await userEvent.click(screen.getByText("Add new Task"));
 
 		expect(screen.getByPlaceholderText("Title")).toBeInTheDocument();
+	});
+
+	it("wechselt die Hintergrundfarbe beim Hover", async () => {
+		vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => [] }));
+
+		render(
+			<TasksProvider>
+				<AddButton />
+			</TasksProvider>,
+		);
+
+		const button = screen.getByText("Add new Task");
+		expect(button.style.backgroundColor).toBe("var(--accent)");
+
+		await userEvent.hover(button);
+		expect(button.style.backgroundColor).toBe("color-mix(in srgb, var(--accent) 80%, white)");
+
+		await userEvent.unhover(button);
+		expect(button.style.backgroundColor).toBe("var(--accent)");
 	});
 });

@@ -4,10 +4,17 @@
 	--primary: #f9f9f9;
 	--background: #1f1f1f;
 	--foreground: #262626;
+	--accent: #de483a;
+	--accent-dark: color-mix(in srgb, var(--accent) 50%, var(--background));
 }
 
 body {
 	background: var(--background);
+}
+
+button {
+	cursor: pointer;
+	transition: background-color 0.4s ease;
 }
 
 .container {
@@ -17,5 +24,9 @@ body {
 	border-radius: 1rem;
 	padding: 0.5rem;
 	margin: 1rem;
+}
+
+.foreground-button:hover {
+	background-color: color-mix(in srgb, var(--foreground) 90%, white);
 }
 

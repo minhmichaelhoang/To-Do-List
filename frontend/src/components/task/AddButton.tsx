@@ -19,10 +19,12 @@ export function AddButton() {
 				onMouseEnter={() => setIsHovered(true)}
 				onMouseLeave={() => setIsHovered(false)}
 				style={{
-					backgroundColor: isHovered ? "#f06a52" : "#de483a",
+					backgroundColor: isHovered
+						? "color-mix(in srgb, var(--accent) 80%, white)"
+						: "var(--accent)",
 				}}
 			>
-				+
+				Add new Task
 			</Button>
 			<CreateTaskModal
 				open={isOpen}

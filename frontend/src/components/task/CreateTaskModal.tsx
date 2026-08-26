@@ -73,16 +73,22 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 	}
 
 	return (
-		<Modal open={open} onClose={onClose}>
+		<Modal
+			open={open} onClose={onClose}
+			style={{
+				width: "33.2%",
+				height: "33.2%",
+			}}
+		>
 			<form
 				onSubmit={handleSubmit}
 				style={{
 					display: "flex",
 					justifyContent: "center",
-					alignItems: "center",
 					flexDirection: "column",
 					margin: "auto",
 					gap: "1rem",
+
 				}}
 			>
 				<input
@@ -90,6 +96,8 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 					placeholder="Title"
 					value={title}
 					onChange={e => handleTitleChange(e)}
+					style={{fontWeight: "bold"}}
+					autoFocus
 				/>
 				<input
 					type="text"
@@ -103,7 +111,7 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 					value={project}
 					onChange={e => handleProjectChange(e)}
 				/>
-				<button type="submit">Submit</button>
+				<button type="submit" style={{ alignSelf: "flex-end" }}>Submit</button>
 				{submitError && <p style={{ color: "red" }}>{submitError}</p>}
 			</form>
 		</Modal>
