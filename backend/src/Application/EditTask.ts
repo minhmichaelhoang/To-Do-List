@@ -12,7 +12,10 @@ export class EditTask {
 	constructor(private readonly taskRepository: TaskRepository) {}
 
 	async execute(data: TaskDto): Promise<void> {
-		const task = new Task(data.title, data.description, data.project, data.id);
+		const date = Task.resolveDate(data.date, data.time);
+		Task.assertNotInPast(date, data.time);
+
+		const task = new Task(data.title, data.description, data.project, date, data.time, data.id);
 		return this.taskRepository.edit(task);
 	}
 }

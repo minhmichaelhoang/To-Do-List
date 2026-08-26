@@ -36,6 +36,9 @@ export function TaskItem(
 				<strong>{task.title}</strong>
 				<span>{task.description}</span>
 				<span>{task.project}</span>
+				{(task.date || task.time) && (
+					<span>{[task.date, task.time].filter(Boolean).join(" ")}</span>
+				)}
 			</button>
 			<Checkbox
 				taskId={task.id}

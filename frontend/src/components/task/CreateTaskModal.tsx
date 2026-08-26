@@ -19,6 +19,8 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 		const [title, setTitle] = useState("");
 		const [description, setDescription] = useState("");
 		const [project, setProject] = useState("");
+		const [date, setDate] = useState("");
+		const [time, setTime] = useState("");
 		const [submitError, setSubmitError] = useState("");
 
 	function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
@@ -54,17 +56,28 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 			const response = await fetch("http://localhost:3000/tasks", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ title, description, project }),
+				body: JSON.stringify({ title, description, project, date: date || undefined, time: time || undefined }),
 			});
 
 			if (!response.ok) {
-				setSubmitError(`Fehler beim Erstellen der Aufgabe (Status ${response.status})`);
+				let message = `Fehler beim Erstellen der Aufgabe (Status ${response.status})`;
+				try {
+					const body = await response.json();
+					if (body?.message) {
+						message = body.message;
+					}
+				} catch {
+					// kein JSON-Body vorhanden - Standardmeldung behalten
+				}
+				setSubmitError(message);
 				return;
 			}
 
 			setTitle("");
 			setDescription("");
 			setProject("");
+			setDate("");
+			setTime("");
 			loadTasks();
 			onClose();
 		} catch (error) {
@@ -76,8 +89,8 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 		<Modal
 			open={open} onClose={onClose}
 			style={{
-				width: "33.2%",
-				height: "33.2%",
+				width: "30rem",
+				height: "20rem",
 			}}
 		>
 			<form
@@ -113,6 +126,18 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 					placeholder="Project"
 					value={project}
 					onChange={e => handleProjectChange(e)}
+					style={{ width: "100%", boxSizing: "border-box" }}
+				/>
+				<input
+					type="date"
+					value={date}
+					onChange={e => setDate(e.target.value)}
+					style={{ width: "100%", boxSizing: "border-box" }}
+				/>
+				<input
+					type="time"
+					value={time}
+					onChange={e => setTime(e.target.value)}
 					style={{ width: "100%", boxSizing: "border-box" }}
 				/>
 				<button type="submit" style={{ alignSelf: "flex-end" }}>Submit</button>

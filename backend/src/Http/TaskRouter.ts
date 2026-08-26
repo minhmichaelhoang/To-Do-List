@@ -29,14 +29,20 @@ export function createTaskRouter(
 				id: task.id,
 				title: task.title,
 				description: task.Description,
-				project: task.project
+				project: task.project,
+				date: task.date,
+				time: task.time,
 			})),
 		);
 	});
 
 	router.post("/tasks", async (req, res) => {
-		await addTask.execute(req.body);
-		res.status(201).send();
+		try {
+			await addTask.execute(req.body);
+			res.status(201).send();
+		} catch (error) {
+			res.status(400).json({ message: error instanceof Error ? error.message : "Ungültige Eingabe" });
+		}
 	});
 
 	router.delete("/tasks/:id", async (req, res) => {
@@ -47,9 +53,13 @@ export function createTaskRouter(
 
 	router.put("/tasks/:id", async (req, res) => {
 		const { id } = req.params;
-		const { title, description, project } = req.body;
-		await editTask.execute({ id, title, description, project });
-		res.status(204).send();
+		const { title, description, project, date, time } = req.body;
+		try {
+			await editTask.execute({ id, title, description, project, date, time });
+			res.status(204).send();
+		} catch (error) {
+			res.status(400).json({ message: error instanceof Error ? error.message : "Ungültige Eingabe" });
+		}
 	})
 
 	return router;

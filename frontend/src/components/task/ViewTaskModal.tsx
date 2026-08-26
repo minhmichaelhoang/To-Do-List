@@ -24,6 +24,8 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 	const [title, setTitle] = useState(task.title);
 	const [description, setDescription] = useState(task.description);
 	const [project, setProject] = useState(task.project);
+	const [date, setDate] = useState(task.date ?? "");
+	const [time, setTime] = useState(task.time ?? "");
 	const [submitError, setSubmitError] = useState("");
 
 	useEffect(() => {
@@ -31,6 +33,8 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 			setTitle(task.title);
 			setDescription(task.description);
 			setProject(task.project);
+			setDate(task.date ?? "");
+			setTime(task.time ?? "");
 			setSubmitError("");
 		}
 	}, [open, task]);
@@ -68,11 +72,20 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 			const response = await fetch(`http://localhost:3000/tasks/${task.id}`, {
 				method: "PUT",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ title, description, project }),
+				body: JSON.stringify({ title, description, project, date: date || undefined, time: time || undefined }),
 			});
 
 			if (!response.ok) {
-				setSubmitError(`Fehler beim Bearbeiten der Aufgabe (Status ${response.status})`);
+				let message = `Fehler beim Bearbeiten der Aufgabe (Status ${response.status})`;
+				try {
+					const body = await response.json();
+					if (body?.message) {
+						message = body.message;
+					}
+				} catch {
+					// kein JSON-Body vorhanden - Standardmeldung behalten
+				}
+				setSubmitError(message);
 				return;
 			}
 
@@ -88,8 +101,8 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 			open={open}
 			onClose={onClose}
 			style={{
-				width: "20rem",
-				height: "12rem",
+				width: "30rem",
+				height: "20rem",
 				backgroundColor: "var(--accent-dark)",
 			}}
 		>
@@ -129,6 +142,18 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 					placeholder="Project"
 					value={project}
 					onChange={e => handleProjectChange(e)}
+					style={{ width: "100%", boxSizing: "border-box" }}
+				/>
+				<input
+					type="date"
+					value={date}
+					onChange={e => setDate(e.target.value)}
+					style={{ width: "100%", boxSizing: "border-box" }}
+				/>
+				<input
+					type="time"
+					value={time}
+					onChange={e => setTime(e.target.value)}
 					style={{ width: "100%", boxSizing: "border-box" }}
 				/>
 				<button

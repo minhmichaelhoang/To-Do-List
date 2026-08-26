@@ -10,6 +10,10 @@ export interface TaskDto {
 	title: string;
 	description: string;
 	project: string;
+	/** ISO-Datum (YYYY-MM-DD), optional. Bei nur gesetzter `time` wird beim Anlegen/Bearbeiten automatisch das heutige Datum eingesetzt. */
+	date?: string;
+	/** Uhrzeit (HH:mm), optional. */
+	time?: string;
 }
 
 /** Eingabe zum Anlegen eines Tasks – wie `TaskDto`, aber ohne `id` (die wird erst beim Anlegen vergeben). */

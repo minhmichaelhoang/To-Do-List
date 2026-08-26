@@ -15,7 +15,10 @@ export class AddTask {
 	constructor(private readonly taskRepository: TaskRepository) {}
 
 	async execute(data: CreateTaskDto): Promise<void> {
-		const task = new Task(data.title, data.description, data.project);
+		const date = Task.resolveDate(data.date, data.time);
+		Task.assertNotInPast(date, data.time);
+
+		const task = new Task(data.title, data.description, data.project, date, data.time);
 		return this.taskRepository.add(task);
 	}
 }
