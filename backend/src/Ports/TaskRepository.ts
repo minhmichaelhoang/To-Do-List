@@ -11,4 +11,5 @@ export interface TaskRepository {
 	findByTitleContains(letters: string): Promise<Task[]>; // noch nicht in Verwendung
 	add(task: Task): Promise<void>;
 	delete(id: string): Promise<void>;
+	edit(task: Task): Promise<void>;
 }

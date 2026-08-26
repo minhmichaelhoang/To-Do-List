@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
-interface ModalProps {
+/** Props für `Modal` – auch von `CreateTaskModal`/`ViewTaskModal` per `Pick<ModalProps, "open" | "onClose">` wiederverwendet. */
+export interface ModalProps {
 	open: boolean;
 	onClose: () => void;
 	children?: ReactNode;
@@ -32,12 +33,7 @@ export function Modal({ open, onClose, children }: ModalProps) {
 		>
 			<div
 				onClick={(e) => e.stopPropagation()}
-				style={{
-					backgroundColor: "white",
-					borderRadius: "0.5rem",
-					padding: "1.5rem",
-					minWidth: "300px",
-				}}
+				className={"container"}
 			>
 				{children}
 			</div>

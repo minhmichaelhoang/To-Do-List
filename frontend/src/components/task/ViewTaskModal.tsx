@@ -1,22 +1,21 @@
-import { Modal } from "@/components/ui/Modal";
-import { useState } from "react";
-import type { ChangeEvent, SubmitEvent } from "react";
+import {Modal, type ModalProps} from "@/components/ui/Modal.tsx";
+import {type ChangeEvent, type SubmitEvent, useState} from "react";
+import { useTasks } from "@/context/TasksContext.tsx";
 
-interface TaskModalProps {
-	open: boolean;
-	onClose: () => void;
-	onTaskCreated: () => void;
+interface TaskModalProps extends Pick<ModalProps, "open" | "onClose">{
+	taskId: string;
 }
 
 /**
- * Formular zum Anlegen einer neuen Aufgabe, gerendert innerhalb von `Modal`.
- * Hält Titel/Beschreibung/Projekt als Controlled-Components (`useState` pro
+ * Formular für eine Aufgabe, gerendert innerhalb von `Modal`. Hält
+ * Titel/Beschreibung/Projekt als Controlled-Components (`useState` pro
  * Feld) und schickt sie bei Submit per `POST /tasks` ans Backend. Nur bei
- * erfolgreicher Antwort werden Felder zurückgesetzt, `onTaskCreated`
- * aufgerufen und das Modal geschlossen – bei einem Fehler bleibt das
- * Formular mit der Eingabe und einer Fehlermeldung (`submitError`) offen.
+ * erfolgreicher Antwort werden Felder zurückgesetzt, `loadTasks` (aus dem
+ * `TasksContext`) aufgerufen und das Modal geschlossen – bei einem Fehler
+ * bleibt das Formular mit der Eingabe und einer Fehlermeldung (`submitError`) offen.
  */
-export function TaskModal({ open, onClose, onTaskCreated }: TaskModalProps) {
+export function ViewTaskModal({open, onClose, taskId}:TaskModalProps) {
+	const { loadTasks } = useTasks();
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
 	const [project, setProject] = useState("");
@@ -52,21 +51,21 @@ export function TaskModal({ open, onClose, onTaskCreated }: TaskModalProps) {
 		setSubmitError("");
 
 		try {
-			const response = await fetch("http://localhost:3000/tasks", {
-				method: "POST",
+			const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
+				method: "PUT",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ title, description, project }),
 			});
 
 			if (!response.ok) {
-				setSubmitError(`Fehler beim Erstellen der Aufgabe (Status ${response.status})`);
+				setSubmitError(`Fehler beim Bearbeiten der Aufgabe (Status ${response.status})`);
 				return;
 			}
 
 			setTitle("");
 			setDescription("");
 			setProject("");
-			onTaskCreated();
+			loadTasks();
 			onClose();
 		} catch (error) {
 			setSubmitError(error instanceof Error ? error.message : "Unbekannter Fehler");
@@ -75,7 +74,13 @@ export function TaskModal({ open, onClose, onTaskCreated }: TaskModalProps) {
 
 	return (
 		<Modal open={open} onClose={onClose}>
-			<form onSubmit={handleSubmit}>
+			<form
+				onSubmit={handleSubmit}
+				style={{
+					width: "66.8%",
+					height: "66.8%",
+				}}
+			>
 				<input
 					type="text"
 					placeholder="Title"

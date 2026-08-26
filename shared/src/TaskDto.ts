@@ -11,3 +11,6 @@ export interface TaskDto {
 	description: string;
 	project: string;
 }
+
+/** Eingabe zum Anlegen eines Tasks – wie `TaskDto`, aber ohne `id` (die wird erst beim Anlegen vergeben). */
+export type CreateTaskDto = Omit<TaskDto, "id">;

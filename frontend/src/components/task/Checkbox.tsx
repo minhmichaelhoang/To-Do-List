@@ -1,19 +1,23 @@
+import type { CSSProperties } from "react";
 import { Button } from "@/components/ui/Button.tsx"
 import {useState} from "react";
+import { useTasks } from "@/context/TasksContext";
 
-export interface CheckboxProps {
-	onBoxChecked: () => void;
+interface CheckboxProps {
 	taskId: string;
+	style?: CSSProperties;
 }
 
 /**
- * Ein Button, der eine Aufgabe nach ID löscht.
+ * Ein Button, der eine Aufgabe nach ID löscht und danach die Task-Liste
+ * über den `TasksContext` neu lädt.
  *
  * @param props die Property
- * @param props.onBoxChecked die Funktion, die zusätzlich bei einem Klicken ausgeführt wird
  * @param props.taskId die ID der Task
+ * @param props.style optionale Positionierung/Styling, wird an den inneren Button gereicht
  */
-export function Checkbox({onBoxChecked, taskId}: CheckboxProps) {
+export function Checkbox({taskId, style}: CheckboxProps) {
+	const { loadTasks } = useTasks();
 	const [deleteError, setDeleteError] = useState("");
 
 	async function handleClick() {
@@ -25,7 +29,7 @@ export function Checkbox({onBoxChecked, taskId}: CheckboxProps) {
 				setDeleteError(`Fehler beim Löschen der Aufgabe (Status ${response.status})`)
 				return
 			}
-			onBoxChecked();
+			loadTasks();
 		} catch (error) {
 			setDeleteError(error instanceof Error ? error.message : "Unbekannter Fehler");
 		}
@@ -35,15 +39,18 @@ export function Checkbox({onBoxChecked, taskId}: CheckboxProps) {
 		<>
 			<Button
 				onClick={handleClick}
-				color={"transparent"}
-				borderColor= "#0d0d0d"
-				radius={"50rem"}
-				height={"1.25rem"}
-				width={"1.25rem"}
-				padding={"0"}
+				style={{
+					backgroundColor: "transparent",
+					border: "1px solid gray",
+					borderRadius: "50rem",
+					height: "1.25rem",
+					width: "1.25rem",
+					padding: "0",
+					margin: "0",
+					...style,
+				}}
 			/>
 			{deleteError && <p style={{ color: "red" }}>{deleteError}</p>}
 		</>
 	);
 }
-

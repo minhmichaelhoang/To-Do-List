@@ -1,27 +1,32 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { TaskModal } from "@/components/task/TaskModal";
-
-interface AddButtonProps {
-	onTaskCreated: () => void;
-}
+import { CreateTaskModal } from "@/components/task/CreateTaskModal.tsx";
 
 /**
- * Öffnet per Klick ein `TaskModal` zum Anlegen einer neuen Aufgabe. Besitzt
- * den offen/geschlossen-Zustand des Modals selbst; `onTaskCreated` wird nur
- * durchgereicht, damit der Elternteil (z.B. `App`) nach erfolgreichem
- * Anlegen die Task-Liste neu laden kann.
+ * Öffnet per Klick ein `CreateTaskModal` zum Anlegen einer neuen Aufgabe.
+ * Besitzt nur den offen/geschlossen-Zustand des Modals selbst – das
+ * Neuladen der Task-Liste nach dem Anlegen übernimmt `CreateTaskModal`
+ * direkt über den `TasksContext`.
  */
-export function AddButton({ onTaskCreated }: AddButtonProps) {
+export function AddButton() {
 	const [isOpen, setIsOpen] = useState(false);
+	const [isHovered, setIsHovered] = useState(false);
 
 	return (
 		<>
-			<Button onClick={() => setIsOpen(true)}>add +</Button>
-			<TaskModal
+			<Button
+				onClick={() => setIsOpen(true)}
+				onMouseEnter={() => setIsHovered(true)}
+				onMouseLeave={() => setIsHovered(false)}
+				style={{
+					backgroundColor: isHovered ? "#f06a52" : "#de483a",
+				}}
+			>
+				+
+			</Button>
+			<CreateTaskModal
 				open={isOpen}
 				onClose={() => setIsOpen(false)}
-				onTaskCreated={onTaskCreated}
 			/>
 		</>
 	);

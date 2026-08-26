@@ -23,7 +23,7 @@ async function main() {
 	});
 
 	const addTask = new AddTask(taskRepository);
-	await addTask.execute("Zähne putzen", "Mindestens 3 Minuten", "Alltag");
+	await addTask.execute({ title: "Zähne putzen", description: "Mindestens 3 Minuten", project: "Alltag" });
 
 	// ist immer ein Snapshot
 	const tasks2 = await listTasks.execute();

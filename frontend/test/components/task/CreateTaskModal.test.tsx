@@ -1,20 +1,24 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { TaskModal } from "../../../src/components/task/TaskModal";
+import { CreateTaskModal } from "../../../src/components/task/CreateTaskModal";
+import { TasksProvider } from "../../../src/context/TasksContext";
 
 afterEach(() => {
 	vi.unstubAllGlobals();
 });
 
-describe("TaskModal", () => {
-	it("schickt Titel und Beschreibung per POST und meldet Erfolg", async () => {
-		const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 201 });
+describe("CreateTaskModal", () => {
+	it("schickt Titel und Beschreibung per POST und lädt die Liste danach neu", async () => {
+		const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 201, json: async () => [] });
 		vi.stubGlobal("fetch", fetchMock);
-		const onTaskCreated = vi.fn();
 		const onClose = vi.fn();
 
-		render(<TaskModal open={true} onClose={onClose} onTaskCreated={onTaskCreated} />);
+		render(
+			<TasksProvider>
+				<CreateTaskModal open={true} onClose={onClose} />
+			</TasksProvider>,
+		);
 
 		await userEvent.type(screen.getByPlaceholderText("Title"), "Titel");
 		await userEvent.type(screen.getByPlaceholderText("Description"), "Beschreibung");
@@ -24,22 +28,30 @@ describe("TaskModal", () => {
 			"http://localhost:3000/tasks",
 			expect.objectContaining({ method: "POST" }),
 		);
-		expect(onTaskCreated).toHaveBeenCalledOnce();
+		// Mount-GET (TasksProvider) + POST + Reload-GET nach Erfolg
+		expect(fetchMock).toHaveBeenCalledTimes(3);
 		expect(onClose).toHaveBeenCalledOnce();
 	});
 
 	it("zeigt eine Fehlermeldung, wenn der Request fehlschlägt, und schließt nicht", async () => {
-		vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 500 }));
-		const onTaskCreated = vi.fn();
+		const fetchMock = vi
+			.fn()
+			.mockResolvedValueOnce({ ok: true, status: 200, json: async () => [] }) // Mount-GET
+			.mockResolvedValueOnce({ ok: false, status: 500 }); // POST
+		vi.stubGlobal("fetch", fetchMock);
 		const onClose = vi.fn();
 
-		render(<TaskModal open={true} onClose={onClose} onTaskCreated={onTaskCreated} />);
+		render(
+			<TasksProvider>
+				<CreateTaskModal open={true} onClose={onClose} />
+			</TasksProvider>,
+		);
 
 		await userEvent.type(screen.getByPlaceholderText("Title"), "Titel");
 		await userEvent.click(screen.getByText("Submit"));
 
 		expect(await screen.findByText(/Fehler beim Erstellen der Aufgabe/)).toBeInTheDocument();
-		expect(onTaskCreated).not.toHaveBeenCalled();
+		expect(fetchMock).toHaveBeenCalledTimes(2);
 		expect(onClose).not.toHaveBeenCalled();
 	});
 });

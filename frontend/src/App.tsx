@@ -1,43 +1,40 @@
-import { useEffect, useState } from "react";
-import type { TaskDto } from "shared";
 import { AddButton } from "@/components/task/AddButton";
 import {TaskItem} from "@/components/task/TaskItem.tsx";
+import { useTasks } from "@/context/TasksContext";
 
-/** Treibender Client der REST-API: ruft beim Mounten `GET /tasks` ab und rendert die Liste. */
+/** Treibender Client der REST-API: liest Tasks aus dem `TasksContext` und rendert die Liste. */
 function App() {
-	const [tasks, setTasks] = useState<TaskDto[]>([]);
-
-	function loadTasks() {
-		fetch("http://localhost:3000/tasks")
-			.then((response) => {
-				if (!response.ok) {
-					throw new Error(`Fehler beim Laden der Tasks (Status ${response.status})`);
-				}
-				return response.json();
-			})
-			.then((data) => setTasks(data))
-			.catch((error) => console.error(error));
-	}
-
-	useEffect(() => {
-		loadTasks();
-	}, []);
+	const { tasks } = useTasks();
 
 	return (
-		<div className="mx-auto max-w-md p-6">
-			<h1 className="mb-4 text-2xl font-semibold text-[#de483a]">Tasks</h1>
+		<div
+		style={{
+			maxHeight: "100vh",
+			padding: "2rem",
+			maxWidth: "30vw",
+			margin: "0 auto",
+
+		}}>
+			<h1 style={{
+				textAlign: "center",
+				color: "#f9f9f9",
+				fontSize: "1.5rem",
+				fontWeight: "bold",
+			}}>
+				To Do List
+			</h1>
 
 			<ul className="space-y-2">
 				{tasks.map((task) => (
 					<li
 						key={task.id}
 					>
-						<TaskItem onTaskDeleted={loadTasks} task={task} />
+						<TaskItem task={task} />
 					</li>
 				))}
 			</ul>
 			<div style={{ display: "flex", justifyContent: "center" }}>
-				<AddButton onTaskCreated={loadTasks} />
+				<AddButton />
 			</div>
 		</div>
 	);

@@ -43,4 +43,11 @@ class PostgreTaskRepository implements TaskRepository {
 	async delete(id: string): Promise<void> {
 		await this.pool.query("DELETE FROM task " + "WHERE id = $1;", [id]);
 	}
+
+	async edit(task: Task): Promise<void> {
+		await this.pool.query(
+			"UPDATE task SET title = $1, description = $2, project = $3 " + "WHERE id = $4;",
+			[task.title, task.Description, task.project, task.id],
+		);
+	}
 }

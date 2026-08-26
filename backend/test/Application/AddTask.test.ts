@@ -7,7 +7,7 @@ describe("AddTask", () => {
 		const taskRepository = new InMemoryTaskRepository();
 		const addTask = new AddTask(taskRepository);
 
-		await addTask.execute("Titel", "Beschreibung", "Projekt");
+		await addTask.execute({ title: "Titel", description: "Beschreibung", project: "Projekt" });
 
 		const tasks = await taskRepository.findAll();
 		expect(tasks).toHaveLength(1);
@@ -20,8 +20,8 @@ describe("AddTask", () => {
 		const taskRepository = new InMemoryTaskRepository();
 		const addTask = new AddTask(taskRepository);
 
-		await addTask.execute("Titel A", "Beschreibung", "Projekt");
-		await addTask.execute("Titel B", "Beschreibung", "Projekt");
+		await addTask.execute({ title: "Titel A", description: "Beschreibung", project: "Projekt" });
+		await addTask.execute({ title: "Titel B", description: "Beschreibung", project: "Projekt" });
 
 		const [taskA, taskB] = await taskRepository.findAll();
 		expect(taskA.id).not.toBe(taskB.id);
