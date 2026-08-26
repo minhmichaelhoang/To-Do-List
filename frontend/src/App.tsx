@@ -9,30 +9,26 @@ function App() {
 	return (
 		<div
 		style={{
-			maxHeight: "100vh",
 			padding: "2rem",
-			maxWidth: "30vw",
+			maxWidth: "50rem",
 			margin: "0 auto",
 
+			display: "flex",
+			flexDirection: "column",
+			alignContent: "center",
 		}}>
 			<h1 style={{
 				textAlign: "center",
-				color: "#f9f9f9",
-				fontSize: "1.5rem",
+				color: "var(--primary)",
 				fontWeight: "bold",
 			}}>
 				To Do List
 			</h1>
 
-			<ul className="space-y-2">
-				{tasks.map((task) => (
-					<li
-						key={task.id}
-					>
-						<TaskItem task={task} />
-					</li>
-				))}
-			</ul>
+			{tasks.map((task) => (
+				<TaskItem task={task} />
+			))}
+
 			<div style={{ display: "flex", justifyContent: "center" }}>
 				<AddButton />
 			</div>

@@ -8,6 +8,15 @@
 	--accent-dark: color-mix(in srgb, var(--accent) 50%, var(--background));
 }
 
+h1 {
+	font-size: clamp(1rem, 4vw, 1.5rem);
+	margin: 1rem
+}
+
+p {
+	font-size: clamp(0.5rem, 3vw, 1rem)
+}
+
 body {
 	background: var(--background);
 }
@@ -22,8 +31,7 @@ button {
 	background: var(--foreground);
 	color: var(--primary);
 	border-radius: 1rem;
-	padding: 0.5rem;
-	margin: 1rem;
+	padding: 0.7rem;
 }
 
 .foreground-button:hover {

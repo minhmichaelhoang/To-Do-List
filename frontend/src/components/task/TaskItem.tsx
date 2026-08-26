@@ -22,29 +22,28 @@ export function TaskItem(
 	const[isOpen, setIsOpen] = useState(false);
 
 	return (
-		<div style={{ position: 'relative'}}>
+		<div style={{ position: "relative", marginBottom: "1rem" }}>
 			<button
-					onClick={() => setIsOpen(true)}
-					className={"container foreground-button"}
-				>
-					<div
-						style={{
-							display:"flex",
-							flexDirection:"column",
-							position:"relative",
-							left: "3rem",
-							textAlign: "left",
-							minHeight: "3rem"
-						}}
-					>
-						<strong>{task.title}</strong>
-						<span>{task.description}</span>
-						<span>{task.project}</span>
-					</div>
+				onClick={() => setIsOpen(true)}
+				className={"container foreground-button"}
+				style={{
+					textAlign: "left",
+					paddingLeft: "3rem",
+					display: "flex",
+					flexDirection: "column",
+				}}
+			>
+				<strong>{task.title}</strong>
+				<span>{task.description}</span>
+				<span>{task.project}</span>
 			</button>
 			<Checkbox
 				taskId={task.id}
-				style={{ position: "absolute", top: "1rem", left: "2rem" }}
+				style={{
+					position: "absolute",
+					top: "1rem",
+					left: "1rem"
+			}}
 			/>
 			<ViewTaskModal
 				open={isOpen}
