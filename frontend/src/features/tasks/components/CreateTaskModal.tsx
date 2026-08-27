@@ -3,6 +3,7 @@ import type { ModalProps } from "@/shared/components/Modal";
 import { useState } from "react";
 import type { ChangeEvent, SubmitEvent } from "react";
 import { useTasks } from "@/features/tasks/context/TasksContext";
+import { useProjects } from "@/features/projects/context/ProjectsContext";
 import { createTask } from "@/features/tasks/api/TaskApi";
 
 interface CreateModalProps extends Pick<ModalProps, "open" | "onClose"> {}
@@ -17,6 +18,7 @@ interface CreateModalProps extends Pick<ModalProps, "open" | "onClose"> {}
  */
 export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 		const { loadTasks } = useTasks();
+		const { loadProjects } = useProjects();
 		const [title, setTitle] = useState("");
 		const [description, setDescription] = useState("");
 		const [project, setProject] = useState("");
@@ -62,6 +64,7 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 			setDate("");
 			setTime("");
 			loadTasks();
+			loadProjects();
 			onClose();
 		} catch (error) {
 			setSubmitError(error instanceof Error ? error.message : "Unbekannter Fehler");

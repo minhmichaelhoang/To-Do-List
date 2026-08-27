@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { TaskDto } from "shared";
 import { ViewTaskModal } from "../../../../src/features/tasks/components/ViewTaskModal";
-import { TasksProvider } from "../../../../src/features/tasks/context/TasksContext";
+import { AllProviders } from "../../../TestProviders";
 
 afterEach(() => {
 	vi.unstubAllGlobals();
@@ -21,9 +21,9 @@ describe("ViewTaskModal", () => {
 		vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => [] }));
 
 		render(
-			<TasksProvider>
+			<AllProviders>
 				<ViewTaskModal open={true} onClose={() => {}} task={task} />
-			</TasksProvider>,
+			</AllProviders>,
 		);
 
 		expect(screen.getByPlaceholderText("Title")).toHaveValue("Titel");
@@ -37,9 +37,9 @@ describe("ViewTaskModal", () => {
 		const onClose = vi.fn();
 
 		render(
-			<TasksProvider>
+			<AllProviders>
 				<ViewTaskModal open={true} onClose={onClose} task={task} />
-			</TasksProvider>,
+			</AllProviders>,
 		);
 
 		const titleInput = screen.getByPlaceholderText("Title");
@@ -51,29 +51,30 @@ describe("ViewTaskModal", () => {
 			"http://localhost:3000/tasks/abc-123",
 			expect.objectContaining({ method: "PUT" }),
 		);
-		// Mount-GET (TasksProvider) + PUT + Reload-GET nach Erfolg
-		expect(fetchMock).toHaveBeenCalledTimes(3);
+		// Mount-GET Tasks + Mount-GET Projects + PUT + Reload-GET Tasks + Reload-GET Projects nach Erfolg
+		expect(fetchMock).toHaveBeenCalledTimes(5);
 		expect(onClose).toHaveBeenCalledOnce();
 	});
 
 	it("zeigt eine Fehlermeldung, wenn der Request fehlschlägt, und schließt nicht", async () => {
 		const fetchMock = vi
 			.fn()
-			.mockResolvedValueOnce({ ok: true, status: 200, json: async () => [] }) // Mount-GET
+			.mockResolvedValueOnce({ ok: true, status: 200, json: async () => [] }) // Mount-GET (Tasks oder Projects)
+			.mockResolvedValueOnce({ ok: true, status: 200, json: async () => [] }) // Mount-GET (Tasks oder Projects)
 			.mockResolvedValueOnce({ ok: false, status: 500 }); // PUT
 		vi.stubGlobal("fetch", fetchMock);
 		const onClose = vi.fn();
 
 		render(
-			<TasksProvider>
+			<AllProviders>
 				<ViewTaskModal open={true} onClose={onClose} task={task} />
-			</TasksProvider>,
+			</AllProviders>,
 		);
 
 		await userEvent.click(screen.getByText("Submit"));
 
 		expect(await screen.findByText(/Fehler beim Bearbeiten der Aufgabe/)).toBeInTheDocument();
-		expect(fetchMock).toHaveBeenCalledTimes(2);
+		expect(fetchMock).toHaveBeenCalledTimes(3);
 		expect(onClose).not.toHaveBeenCalled();
 	});
 
@@ -81,9 +82,9 @@ describe("ViewTaskModal", () => {
 		vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => [] }));
 
 		render(
-			<TasksProvider>
+			<AllProviders>
 				<ViewTaskModal open={true} onClose={() => {}} task={task} />
-			</TasksProvider>,
+			</AllProviders>,
 		);
 
 		fireEvent.change(screen.getByPlaceholderText("Title"), { target: { value: "a".repeat(501) } });
@@ -100,9 +101,9 @@ describe("ViewTaskModal", () => {
 		const onClose = vi.fn();
 
 		render(
-			<TasksProvider>
+			<AllProviders>
 				<ViewTaskModal open={true} onClose={onClose} task={task} />
-			</TasksProvider>,
+			</AllProviders>,
 		);
 
 		await userEvent.click(screen.getByText("Submit"));

@@ -1,6 +1,7 @@
 import {Modal, type ModalProps} from "@/shared/components/Modal.tsx";
 import {type ChangeEvent, type SubmitEvent, useEffect, useState} from "react";
 import { useTasks } from "@/features/tasks/context/TasksContext.tsx";
+import { useProjects } from "@/features/projects/context/ProjectsContext";
 import { updateTask } from "@/features/tasks/api/TaskApi";
 import type { TaskDto } from "shared";
 
@@ -22,6 +23,7 @@ interface TaskModalProps extends Pick<ModalProps, "open" | "onClose">{
  */
 export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 	const { loadTasks } = useTasks();
+	const { loadProjects } = useProjects();
 	const [title, setTitle] = useState(task.title);
 	const [description, setDescription] = useState(task.description);
 	const [project, setProject] = useState(task.project.name);
@@ -73,6 +75,7 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 			await updateTask({ id: task.id, title, description, project, date: date || undefined, time: time || undefined });
 
 			loadTasks();
+			loadProjects();
 			onClose();
 		} catch (error) {
 			setSubmitError(error instanceof Error ? error.message : "Unbekannter Fehler");

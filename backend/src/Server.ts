@@ -24,13 +24,16 @@ import {EditTask} from "./Application/EditTask";
 async function main() {
 	const projectRepository = new InMemoryProjectRepository();
 	const schule = new Project("Schule");
-	const alltag = new Project("Alltag");
+	const alltag = new Project("Alltag", "#074e6a");
+	const privat = new Project("Privat", "#d5d0ba");
 	await projectRepository.add(schule);
 	await projectRepository.add(alltag);
+	await projectRepository.add(privat);
 
 	const taskRepository = new InMemoryTaskRepository([
 		new Task("Hausaufgaben machen", "Mathe Seite 3, Aufgabe 4", schule.id),
 		new Task("Einkaufen", "Milch, Brot, Eier", alltag.id),
+		new Task("Wäsche waschen", "Nur Buntwäsche waschen", privat.id)
 	]);
 
 	const findOrCreateProject = new FindOrCreateProject(projectRepository);

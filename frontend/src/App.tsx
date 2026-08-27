@@ -3,6 +3,8 @@ import type { TaskDto } from "shared";
 import { AddButton } from "@/features/tasks/components/AddButton";
 import {TaskItem} from "@/features/tasks/components/TaskItem.tsx";
 import { useTasks } from "@/features/tasks/context/TasksContext";
+import { useProjects } from "@/features/projects/context/ProjectsContext";
+import {NavigationBar} from "@/shared/components/NavigationBar.tsx";
 
 type SortBy = "date" | "name";
 
@@ -23,53 +25,58 @@ function compareByDate(a: TaskDto, b: TaskDto): number {
 /** Treibender Client der REST-API: liest Tasks aus dem `TasksContext` und rendert die Liste. */
 function App() {
 	const { tasks } = useTasks();
+	const { projects } = useProjects();
 	const [sortBy, setSortBy] = useState<SortBy>("date");
 
 	const sortedTasks = [...tasks].sort((a, b) =>
 		sortBy === "name" ? a.title.localeCompare(b.title) : compareByDate(a, b),
 	);
+	const sortedProjects = [...projects].sort((a, b) =>
+		a.name.localeCompare(b.name));
 
 	return (
-		<div
-		style={{
-			padding: "2rem",
-			maxWidth: "50rem",
-			margin: "0 auto",
+		<div style={{ display: "flex", flexDirection: "row" }}>
+			<NavigationBar projects={sortedProjects}/>
+			<div
+			style={{
+				padding: "2rem",
+				maxWidth: "50rem",
+				margin: "0 auto",
 
-			display: "flex",
-			flexDirection: "column",
-			alignContent: "center",
-		}}>
-			<h1 style={{
-				textAlign: "center",
-				color: "var(--primary)",
-				fontWeight: "bold",
+				display: "flex",
+				flexDirection: "column",
+				alignContent: "center",
 			}}>
-				To Do List
-			</h1>
+				<h1 style={{
+					textAlign: "center",
+					color: "var(--primary)",
+					fontWeight: "bold",
+				}}>
+					To Do List
+				</h1>
+				<div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem", alignItems: "center" }}>
+					<label htmlFor="sort-by" style={{ color: "var(--primary)" }}>Sortieren nach</label>
+					<select
+						id="sort-by"
+						value={sortBy}
+						onChange={(e) => setSortBy(e.target.value as SortBy)}
+					>
+						<option value="date">Datum &amp; Uhrzeit</option>
+						<option value="name">Name</option>
+					</select>
+				</div>
 
-			<div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem", alignItems: "center" }}>
-				<label htmlFor="sort-by" style={{ color: "var(--primary)" }}>Sortieren nach</label>
-				<select
-					id="sort-by"
-					value={sortBy}
-					onChange={(e) => setSortBy(e.target.value as SortBy)}
-				>
-					<option value="date">Datum &amp; Uhrzeit</option>
-					<option value="name">Name</option>
-				</select>
-			</div>
+				<ul className="space-y-3">
+					{sortedTasks.map((task) => (
+						<li key={task.id}>
+							<TaskItem task={task} />
+						</li>
+					))}
+				</ul>
 
-			<ul className="space-y-3">
-				{sortedTasks.map((task) => (
-					<li key={task.id}>
-						<TaskItem task={task} />
-					</li>
-				))}
-			</ul>
-
-			<div style={{ display: "flex", justifyContent: "center" }}>
-				<AddButton />
+				<div style={{ display: "flex", justifyContent: "center" }}>
+					<AddButton />
+				</div>
 			</div>
 		</div>
 	);

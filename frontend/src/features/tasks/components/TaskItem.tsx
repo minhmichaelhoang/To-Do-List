@@ -2,6 +2,7 @@ import type {TaskDto} from "shared/src/TaskDto.ts";
 import {Checkbox} from "@/features/tasks/components/Checkbox.tsx";
 import { useState} from "react";
 import {ViewTaskModal} from "@/features/tasks/components/ViewTaskModal.tsx";
+import {ProjectDisplay} from "@/features/projects/ProjectDisplay.tsx";
 
 interface TaskItemProps {
 	task: TaskDto;
@@ -14,15 +15,12 @@ interface TaskItemProps {
  * @param props TaskitemProps
  * @param props.task die Task, die dargestellt werden soll
  */
-export function TaskItem(
-	{
-		task
-	}: TaskItemProps) {
+export function TaskItem({ task }: TaskItemProps) {
 
 	const[isOpen, setIsOpen] = useState(false);
 
 	return (
-		<div style={{ position: "relative"}}>
+		<div style={{ position: "relative", width: "30rem"}}>
 			<button
 				onClick={() => setIsOpen(true)}
 				className={"container foreground-button"}
@@ -35,18 +33,7 @@ export function TaskItem(
 			>
 				<strong>{task.title}</strong>
 				<span>{task.description}</span>
-				<span style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-					<span
-						style={{
-							display: "inline-block",
-							width: "0.6rem",
-							height: "0.6rem",
-							borderRadius: "50%",
-							backgroundColor: task.project.color,
-						}}
-					/>
-					{task.project.name}
-				</span>
+				<ProjectDisplay project={task.project}></ProjectDisplay>
 				{(task.date || task.time) && (
 					<span>{[task.date, task.time].filter(Boolean).join(" ")}</span>
 				)}

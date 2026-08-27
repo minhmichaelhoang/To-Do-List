@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { AddButton } from "../../../../src/features/tasks/components/AddButton";
-import { TasksProvider } from "../../../../src/features/tasks/context/TasksContext";
+import { AllProviders } from "../../../TestProviders";
 
 afterEach(() => {
 	vi.unstubAllGlobals();
@@ -13,9 +13,9 @@ describe("AddButton", () => {
 		vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => [] }));
 
 		render(
-			<TasksProvider>
+			<AllProviders>
 				<AddButton />
-			</TasksProvider>,
+			</AllProviders>,
 		);
 
 		expect(screen.queryByPlaceholderText("Title")).not.toBeInTheDocument();
@@ -25,9 +25,9 @@ describe("AddButton", () => {
 		vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => [] }));
 
 		render(
-			<TasksProvider>
+			<AllProviders>
 				<AddButton />
-			</TasksProvider>,
+			</AllProviders>,
 		);
 
 		await userEvent.click(screen.getByText("Add new Task"));
@@ -39,9 +39,9 @@ describe("AddButton", () => {
 		vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => [] }));
 
 		render(
-			<TasksProvider>
+			<AllProviders>
 				<AddButton />
-			</TasksProvider>,
+			</AllProviders>,
 		);
 
 		const button = screen.getByText("Add new Task");

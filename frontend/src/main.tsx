@@ -3,11 +3,14 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
 import { TasksProvider } from "./features/tasks/context/TasksContext.tsx";
+import { ProjectsProvider } from "./features/projects/context/ProjectsContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
-		<TasksProvider>
-			<App />
-		</TasksProvider>
+		<ProjectsProvider>
+			<TasksProvider>
+				<App />
+			</TasksProvider>
+		</ProjectsProvider>
 	</StrictMode>,
 );

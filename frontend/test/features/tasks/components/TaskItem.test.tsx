@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { TaskDto } from "shared";
 import { TaskItem } from "../../../../src/features/tasks/components/TaskItem";
-import { TasksProvider } from "../../../../src/features/tasks/context/TasksContext";
+import { AllProviders } from "../../../TestProviders";
 
 afterEach(() => {
 	vi.unstubAllGlobals();
@@ -21,9 +21,9 @@ describe("TaskItem", () => {
 		vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => [] }));
 
 		render(
-			<TasksProvider>
+			<AllProviders>
 				<TaskItem task={task} />
-			</TasksProvider>,
+			</AllProviders>,
 		);
 
 		expect(screen.getByText("Titel")).toBeInTheDocument();
@@ -35,9 +35,9 @@ describe("TaskItem", () => {
 		vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => [] }));
 
 		render(
-			<TasksProvider>
+			<AllProviders>
 				<TaskItem task={task} />
-			</TasksProvider>,
+			</AllProviders>,
 		);
 
 		expect(screen.queryByPlaceholderText("Title")).not.toBeInTheDocument();
