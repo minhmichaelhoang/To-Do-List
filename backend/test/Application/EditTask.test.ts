@@ -1,13 +1,17 @@
 import { describe, expect, it } from "vitest";
 import { EditTask } from "../../src/Application/EditTask";
 import { AddTask } from "../../src/Application/AddTask";
+import { FindOrCreateProject } from "../../src/Application/FindOrCreateProject";
 import { InMemoryTaskRepository } from "../../src/Adapter/InMemoryTaskRepository";
+import { InMemoryProjectRepository } from "../../src/Adapter/InMemoryProjectRepository";
 
 describe("EditTask", () => {
 	it("überschreibt Titel, Beschreibung und Projekt eines vorhandenen Tasks", async () => {
 		const taskRepository = new InMemoryTaskRepository();
-		const addTask = new AddTask(taskRepository);
-		const editTask = new EditTask(taskRepository);
+		const projectRepository = new InMemoryProjectRepository();
+		const findOrCreateProject = new FindOrCreateProject(projectRepository);
+		const addTask = new AddTask(taskRepository, findOrCreateProject);
+		const editTask = new EditTask(taskRepository, findOrCreateProject);
 
 		await addTask.execute({ title: "Titel", description: "Beschreibung", project: "Projekt" });
 		const [task] = await taskRepository.findAll();
@@ -20,9 +24,10 @@ describe("EditTask", () => {
 		});
 
 		const [updated] = await taskRepository.findAll();
+		const neuesProjekt = await projectRepository.findByName("Neues Projekt");
 		expect(updated.id).toBe(task.id);
 		expect(updated.title).toBe("Neuer Titel");
 		expect(updated.Description).toBe("Neue Beschreibung");
-		expect(updated.project).toBe("Neues Projekt");
+		expect(updated.projectId).toBe(neuesProjekt?.id);
 	});
 });

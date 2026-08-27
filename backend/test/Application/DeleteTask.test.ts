@@ -1,15 +1,18 @@
 import { describe, expect, it } from "vitest";
 import { DeleteTask } from "../../src/Application/DeleteTask";
 import { AddTask } from "../../src/Application/AddTask";
+import { FindOrCreateProject } from "../../src/Application/FindOrCreateProject";
 import { InMemoryTaskRepository } from "../../src/Adapter/InMemoryTaskRepository";
+import { InMemoryProjectRepository } from "../../src/Adapter/InMemoryProjectRepository";
 
 describe("DeleteTask", () => {
 	it("entfernt einen vorhandenen Task", async () => {
 		const taskRepository = new InMemoryTaskRepository();
-		const addTask = new AddTask(taskRepository);
+		const projectRepository = new InMemoryProjectRepository();
+		const addTask = new AddTask(taskRepository, new FindOrCreateProject(projectRepository));
 		const deleteTask = new DeleteTask(taskRepository);
 
-		await addTask.execute("Titel", "Beschreibung", "Projekt");
+		await addTask.execute({ title: "Titel", description: "Beschreibung", project: "Projekt" });
 		const [task] = await taskRepository.findAll();
 
 		await deleteTask.execute(task.id);

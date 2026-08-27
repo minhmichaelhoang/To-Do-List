@@ -1,4 +1,4 @@
-import type { CreateTaskDto, TaskDto } from "shared";
+import type { CreateTaskDto, EditTaskDto, TaskDto } from "shared";
 
 const BASE_URL = "http://localhost:3000/tasks";
 
@@ -29,7 +29,7 @@ export async function createTask(data: CreateTaskDto): Promise<void> {
 }
 
 /** Überschreibt einen bestehenden Task. Wirft mit der Backend-Fehlermeldung, wenn der Request fehlschlägt. */
-export async function updateTask(data: TaskDto): Promise<void> {
+export async function updateTask(data: EditTaskDto): Promise<void> {
 	const response = await fetch(`${BASE_URL}/${data.id}`, {
 		method: "PUT",
 		headers: { "Content-Type": "application/json" },

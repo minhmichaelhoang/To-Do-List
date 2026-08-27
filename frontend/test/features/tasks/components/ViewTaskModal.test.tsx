@@ -13,7 +13,7 @@ const task: TaskDto = {
 	id: "abc-123",
 	title: "Titel",
 	description: "Beschreibung",
-	project: "Projekt",
+	project: { id: "project-1", name: "Projekt", color: "#123456" },
 };
 
 describe("ViewTaskModal", () => {

@@ -24,7 +24,7 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 	const { loadTasks } = useTasks();
 	const [title, setTitle] = useState(task.title);
 	const [description, setDescription] = useState(task.description);
-	const [project, setProject] = useState(task.project);
+	const [project, setProject] = useState(task.project.name);
 	const [date, setDate] = useState(task.date ?? "");
 	const [time, setTime] = useState(task.time ?? "");
 	const [submitError, setSubmitError] = useState("");
@@ -33,7 +33,7 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 		if (open) {
 			setTitle(task.title);
 			setDescription(task.description);
-			setProject(task.project);
+			setProject(task.project.name);
 			setDate(task.date ?? "");
 			setTime(task.time ?? "");
 			setSubmitError("");
@@ -43,7 +43,7 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 	function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
 		const value = e.target.value;
 		setTitle(value);
-		if (value.length > 500) {
+		if (value.length > 50) {
 			setTitle("Title is too long");
 			// später ändern, dass ein Modal geöffnet wird mit der Anzeige und es wird gekappt und nicht weiter eingegeben
 		}

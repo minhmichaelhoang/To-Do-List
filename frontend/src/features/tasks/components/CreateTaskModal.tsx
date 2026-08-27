@@ -27,7 +27,7 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 	function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
 		const value = e.target.value;
 		setTitle(value);
-		if (value.length > 500) {
+		if (value.length > 50) {
 			setTitle("Title is too long");
 			// später ändern, dass ein Modal geöffnet wird mit der Anzeige und es wird gekappt und nicht weiter eingegeben
 		}

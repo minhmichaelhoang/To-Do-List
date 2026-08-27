@@ -49,3 +49,18 @@ describe("Task.assertNotInPast", () => {
 		expect(() => Task.assertNotInPast(undefined, "00:00")).toThrow();
 	});
 });
+
+describe("Task Titellänge", () => {
+	it("erlaubt einen Titel mit genau 50 Zeichen", () => {
+		expect(() => new Task("a".repeat(50), "Beschreibung", "project-id")).not.toThrow();
+	});
+
+	it("wirft im Konstruktor bei einem Titel mit mehr als 50 Zeichen", () => {
+		expect(() => new Task("a".repeat(51), "Beschreibung", "project-id")).toThrow();
+	});
+
+	it("wirft im Setter bei einem Titel mit mehr als 50 Zeichen", () => {
+		const task = new Task("Titel", "Beschreibung", "project-id");
+		expect(() => (task.title = "a".repeat(51))).toThrow();
+	});
+});

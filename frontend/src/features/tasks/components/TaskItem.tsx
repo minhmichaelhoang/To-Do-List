@@ -35,7 +35,18 @@ export function TaskItem(
 			>
 				<strong>{task.title}</strong>
 				<span>{task.description}</span>
-				<span>{task.project}</span>
+				<span style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+					<span
+						style={{
+							display: "inline-block",
+							width: "0.6rem",
+							height: "0.6rem",
+							borderRadius: "50%",
+							backgroundColor: task.project.color,
+						}}
+					/>
+					{task.project.name}
+				</span>
 				{(task.date || task.time) && (
 					<span>{[task.date, task.time].filter(Boolean).join(" ")}</span>
 				)}

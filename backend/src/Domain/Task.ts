@@ -3,21 +3,27 @@ import { randomUUID } from "crypto";
 /**
  * Domain entity. Kern der hexagonalen Architektur – kennt weder Ports noch
  * Adapter noch Infrastruktur (kein Express, kein pg). Die ID wird generiert,
- * wenn keine übergeben wird, damit sowohl neue Tasks (`new Task(t, d)`) als
- * auch aus der Persistenz rekonstruierte Tasks (`new Task(t, d, id)`) über
- * denselben Konstruktor erzeugt werden können.
+ * wenn keine übergeben wird, damit sowohl neue Tasks (ohne `id`) als auch
+ * aus der Persistenz rekonstruierte Tasks (mit `id`) über denselben
+ * Konstruktor erzeugt werden können. `projectId` referenziert ein `Project`
+ * – die Auflösung eines eingetippten Projektnamens zu einer ID übernimmt
+ * `FindOrCreateProject`, nicht `Task` selbst.
  */
 export class Task {
+	/** Maximale Titellänge – anders als "nicht in der Vergangenheit" bei Datum/Uhrzeit eine Invariante, die immer gilt, auch beim Rekonstruieren aus der Persistenz. Daher direkt im Konstruktor/Setter erzwungen. */
+	static readonly MAX_TITLE_LENGTH = 50;
+
 	private readonly _id: string;
 
 	constructor(
 		private _title: string,
 		private _description: string,
-		private _project: string,
+		private _projectId: string,
 		private _date?: string,
 		private _time?: string,
 		id: string = randomUUID() // Attribut ist ein Default-Wert und  wird nicht als Parameter übergeben, daher ist das am Ende
 	) {
+		Task.assertValidTitle(_title);
 		this._id = id;
 	}
 
@@ -30,6 +36,7 @@ export class Task {
 	}
 
 	set title(title: string) {
+		Task.assertValidTitle(title);
 		this._title = title;
 	}
 
@@ -41,12 +48,12 @@ export class Task {
 		this._description = description;
 	}
 
-	get project() {
-		return this._project;
+	get projectId() {
+		return this._projectId;
 	}
 
-	set project(project: string) {
-		this._project = project;
+	set projectId(projectId: string) {
+		this._projectId = projectId;
 	}
 
 	get date() {
@@ -109,5 +116,11 @@ export class Task {
 		const month = String(now.getMonth() + 1).padStart(2, "0");
 		const day = String(now.getDate()).padStart(2, "0");
 		return `${year}-${month}-${day}`;
+	}
+
+	private static assertValidTitle(title: string): void {
+		if (title.length > Task.MAX_TITLE_LENGTH) {
+			throw new Error(`Der Titel darf höchstens ${Task.MAX_TITLE_LENGTH} Zeichen lang sein.`);
+		}
 	}
 }
