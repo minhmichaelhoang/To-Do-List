@@ -8,14 +8,15 @@ export default defineConfig({
 			provider: "v8",
 			// Nur die Bausteine mit echter Logik: Backend Domain + Application
 			// (hexagonale Architektur verspricht dort isolierte Testbarkeit) und
-			// Frontend-Komponenten in components/ui + components/task. App.tsx/
-			// main.tsx/Server.ts/index.ts sind Composition Roots/Verdrahtung,
-			// keine Coverage-Pflicht.
+			// Frontend shared/components + features/*/components + features/*/api.
+			// App.tsx/main.tsx/Server.ts/index.ts sind Composition Roots/
+			// Verdrahtung, keine Coverage-Pflicht.
 			include: [
 				"backend/src/Domain/**",
 				"backend/src/Application/**",
-				"frontend/src/components/ui/**",
-				"frontend/src/components/task/**",
+				"frontend/src/shared/components/**",
+				"frontend/src/features/*/components/**",
+				"frontend/src/features/*/api/**",
 			],
 			thresholds: {
 				statements: 70,
@@ -42,7 +43,7 @@ export default defineConfig({
 				test: {
 					name: "frontend",
 					environment: "jsdom",
-					include: ["frontend/test/**/*.test.tsx"],
+					include: ["frontend/test/**/*.test.{ts,tsx}"],
 					setupFiles: ["frontend/test/Setup.ts"],
 				},
 			},

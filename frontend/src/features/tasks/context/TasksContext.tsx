@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import type { TaskDto } from "shared";
+import { getTasks } from "@/features/tasks/api/TaskApi";
 
 interface TasksContextValue {
 	tasks: TaskDto[];
@@ -19,13 +20,7 @@ export function TasksProvider({ children }: { children: ReactNode }) {
 	const [tasks, setTasks] = useState<TaskDto[]>([]);
 
 	function loadTasks() {
-		fetch("http://localhost:3000/tasks")
-			.then((response) => {
-				if (!response.ok) {
-					throw new Error(`Fehler beim Laden der Tasks (Status ${response.status})`);
-				}
-				return response.json();
-			})
+		getTasks()
 			.then((data) => setTasks(data))
 			.catch((error) => console.error(error));
 	}

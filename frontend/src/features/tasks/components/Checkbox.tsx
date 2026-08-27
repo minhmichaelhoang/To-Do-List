@@ -1,7 +1,8 @@
 import type { CSSProperties } from "react";
-import { Button } from "@/components/ui/Button.tsx"
+import { Button } from "@/shared/components/Button.tsx"
 import {useState} from "react";
-import { useTasks } from "@/context/TasksContext";
+import { useTasks } from "@/features/tasks/context/TasksContext";
+import { deleteTask } from "@/features/tasks/api/TaskApi";
 
 interface CheckboxProps {
 	taskId: string;
@@ -22,13 +23,7 @@ export function Checkbox({taskId, style}: CheckboxProps) {
 
 	async function handleClick() {
 		try {
-			const response = await fetch(`http://localhost:3000/tasks/${taskId}`, {
-				method: "DELETE",
-			});
-			if (!response.ok) {
-				setDeleteError(`Fehler beim Löschen der Aufgabe (Status ${response.status})`)
-				return
-			}
+			await deleteTask(taskId);
 			loadTasks();
 		} catch (error) {
 			setDeleteError(error instanceof Error ? error.message : "Unbekannter Fehler");

@@ -1,8 +1,9 @@
-import { Modal } from "@/components/ui/Modal";
-import type { ModalProps } from "@/components/ui/Modal";
+import { Modal } from "@/shared/components/Modal";
+import type { ModalProps } from "@/shared/components/Modal";
 import { useState } from "react";
 import type { ChangeEvent, SubmitEvent } from "react";
-import { useTasks } from "@/context/TasksContext";
+import { useTasks } from "@/features/tasks/context/TasksContext";
+import { createTask } from "@/features/tasks/api/TaskApi";
 
 interface CreateModalProps extends Pick<ModalProps, "open" | "onClose"> {}
 
@@ -53,25 +54,7 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 		setSubmitError("");
 
 		try {
-			const response = await fetch("http://localhost:3000/tasks", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ title, description, project, date: date || undefined, time: time || undefined }),
-			});
-
-			if (!response.ok) {
-				let message = `Fehler beim Erstellen der Aufgabe (Status ${response.status})`;
-				try {
-					const body = await response.json();
-					if (body?.message) {
-						message = body.message;
-					}
-				} catch {
-					// kein JSON-Body vorhanden - Standardmeldung behalten
-				}
-				setSubmitError(message);
-				return;
-			}
+			await createTask({ title, description, project, date: date || undefined, time: time || undefined });
 
 			setTitle("");
 			setDescription("");

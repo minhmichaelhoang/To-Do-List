@@ -2,8 +2,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { TaskDto } from "shared";
-import { TaskItem } from "../../../src/components/task/TaskItem";
-import { TasksProvider } from "../../../src/context/TasksContext";
+import { TaskItem } from "../../../../src/features/tasks/components/TaskItem";
+import { TasksProvider } from "../../../../src/features/tasks/context/TasksContext";
 
 afterEach(() => {
 	vi.unstubAllGlobals();

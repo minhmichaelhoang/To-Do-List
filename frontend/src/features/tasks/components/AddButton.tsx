@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/Button";
-import { CreateTaskModal } from "@/components/task/CreateTaskModal.tsx";
+import { Button } from "@/shared/components/Button";
+import { CreateTaskModal } from "@/features/tasks/components/CreateTaskModal.tsx";
 
 /**
  * Öffnet per Klick ein `CreateTaskModal` zum Anlegen einer neuen Aufgabe.

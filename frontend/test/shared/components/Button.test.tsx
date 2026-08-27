@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Button } from "../../../src/components/ui/Button";
+import { Button } from "../../../src/shared/components/Button";
 
 describe("Button", () => {
 	it("rendert seinen Inhalt", () => {

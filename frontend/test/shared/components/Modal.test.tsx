@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Modal } from "../../../src/components/ui/Modal";
+import { Modal } from "../../../src/shared/components/Modal";
 
 describe("Modal", () => {
 	it("rendert nichts, wenn open false ist", () => {
