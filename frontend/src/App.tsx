@@ -4,7 +4,7 @@ import { AddButton } from "@/features/tasks/components/AddButton";
 import {TaskItem} from "@/features/tasks/components/TaskItem.tsx";
 import { useTasks } from "@/features/tasks/context/TasksContext";
 import { useProjects } from "@/features/projects/context/ProjectsContext";
-import {NavigationBar} from "@/shared/components/NavigationBar.tsx";
+import {NavigationBar} from "@/features/projects/components/NavigationBar.tsx";
 
 type SortBy = "date" | "name";
 

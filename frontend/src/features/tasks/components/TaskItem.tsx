@@ -2,7 +2,7 @@ import type {TaskDto} from "shared/src/TaskDto.ts";
 import {Checkbox} from "@/features/tasks/components/Checkbox.tsx";
 import { useState} from "react";
 import {ViewTaskModal} from "@/features/tasks/components/ViewTaskModal.tsx";
-import {ProjectDisplay} from "@/features/projects/ProjectDisplay.tsx";
+import {ProjectDisplay} from "@/features/projects/components/ProjectDisplay.tsx";
 
 interface TaskItemProps {
 	task: TaskDto;
@@ -25,10 +25,9 @@ export function TaskItem({ task }: TaskItemProps) {
 				onClick={() => setIsOpen(true)}
 				className={"container foreground-button"}
 				style={{
-					textAlign: "left",
 					paddingLeft: "3rem",
-					display: "flex",
 					flexDirection: "column",
+					alignItems: "flex-start",
 				}}
 			>
 				<strong>{task.title}</strong>
@@ -43,7 +42,7 @@ export function TaskItem({ task }: TaskItemProps) {
 				style={{
 					position: "absolute",
 					top: "1rem",
-					left: "1rem"
+					left: "1.5rem"
 			}}
 			/>
 			<ViewTaskModal

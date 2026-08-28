@@ -22,16 +22,8 @@ export function Button({ onClick, onMouseEnter, onMouseLeave, children, style }:
 			onClick={onClick}
 			onMouseEnter={onMouseEnter}
 			onMouseLeave={onMouseLeave}
-			style={{
-				backgroundColor: "var(--accent)",
-				borderRadius: "0.5rem",
-				padding: "0.5rem",
-				margin: "0.5rem",
-				display: "flex",
-				justifyContent: "center",
-				alignItems: "center",
-				...style,
-			}}
+			className={"button"}
+			style={{...style}}
 		>
 			{children}
 		</button>

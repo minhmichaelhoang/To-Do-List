@@ -1,5 +1,5 @@
-import type { ProjectDto } from "shared"
-import {ProjectDisplay} from "@/features/projects/ProjectDisplay.tsx";
+import type { ProjectDto } from "../../../../../shared"
+import {ProjectButton} from "@/features/projects/components/ProjectButton.tsx";
 
 interface NavigationProps {
 	projects: ProjectDto[]
@@ -24,7 +24,7 @@ export function NavigationBar({projects}: NavigationProps) {
 			<ul>
 				{projects.map((project: ProjectDto) => (
 					<li key={project.id}>
-						<ProjectDisplay project={project}/>
+						<ProjectButton project={project}/>
 					</li>
 				))}
 			</ul>
