@@ -1,4 +1,4 @@
-import type { ProjectDto } from "../../../../../shared"
+import type { ProjectDto } from "shared"
 import {ProjectButton} from "@/features/projects/components/ProjectButton.tsx";
 
 interface NavigationProps {
@@ -20,7 +20,7 @@ export function NavigationBar({projects}: NavigationProps) {
 				width: "14rem",
 				height: "100vh",
 			}}>
-			<strong style={{color: "var(--primary"}}>Projects</strong>
+			<strong style={{color: "var(--primary)"}}>Projects</strong>
 			<ul>
 				{projects.map((project: ProjectDto) => (
 					<li key={project.id}>

@@ -1,23 +1,26 @@
 import type {ProjectDto} from "shared/src/ProjectDto.ts"
 import {useState} from "react";
+import { useProjects } from "@/features/projects/context/ProjectsContext";
 
 interface ProjectButtonProps {
 	project: ProjectDto;
 }
 
 /**
- * Erstellt ein ProjectDisplay, das ein Projekt anhand
- * ihres Projektnamens und Farbe inline repräsentiert.
+ * Erstellt ein ProjectButton, das ein Projekt anhand
+ * ihres Projektnamens und Farbe inline in Form eines
+ * Buttons repräsentiert.
  *
  * @param props die Property
  * @param props.project das Projekt
  */
 export function ProjectButton({ project }: ProjectButtonProps) {
 	const [isHovered, setIsHovered] = useState<boolean>()
+	const { selectProject } = useProjects();
 
 	return (
 		<button
-			onClick={() => {}}
+			onClick={() => selectProject(project.id)}
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
 			className={"button"}

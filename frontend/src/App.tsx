@@ -1,10 +1,10 @@
 import { useState } from "react";
 import type { TaskDto } from "shared";
 import { AddButton } from "@/features/tasks/components/AddButton";
-import {TaskItem} from "@/features/tasks/components/TaskItem.tsx";
 import { useTasks } from "@/features/tasks/context/TasksContext";
 import { useProjects } from "@/features/projects/context/ProjectsContext";
 import {NavigationBar} from "@/features/projects/components/NavigationBar.tsx";
+import {TaskList} from "@/features/tasks/components/TaskList.tsx";
 
 type SortBy = "date" | "name";
 
@@ -25,7 +25,7 @@ function compareByDate(a: TaskDto, b: TaskDto): number {
 /** Treibender Client der REST-API: liest Tasks aus dem `TasksContext` und rendert die Liste. */
 function App() {
 	const { tasks } = useTasks();
-	const { projects } = useProjects();
+	const { projects, selectedProject } = useProjects();
 	const [sortBy, setSortBy] = useState<SortBy>("date");
 
 	const sortedTasks = [...tasks].sort((a, b) =>
@@ -52,7 +52,7 @@ function App() {
 					color: "var(--primary)",
 					fontWeight: "bold",
 				}}>
-					To Do List
+					{selectedProject?.name ?? "To Do List"}
 				</h1>
 				<div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem", alignItems: "center" }}>
 					<label htmlFor="sort-by" style={{ color: "var(--primary)" }}>Sortieren nach</label>
@@ -66,13 +66,7 @@ function App() {
 					</select>
 				</div>
 
-				<ul className="space-y-3">
-					{sortedTasks.map((task) => (
-						<li key={task.id}>
-							<TaskItem task={task} />
-						</li>
-					))}
-				</ul>
+				<TaskList tasks={sortedTasks} />
 
 				<div style={{ display: "flex", justifyContent: "center" }}>
 					<AddButton />
