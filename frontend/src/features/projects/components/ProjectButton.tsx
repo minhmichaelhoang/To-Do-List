@@ -10,15 +10,14 @@ interface ProjectButtonProps {
  * Erstellt ein ProjectButton, das ein Projekt anhand
  * ihres Projektnamens und Farbe inline in Form eines
  * Buttons repräsentiert. Klick wählt das Projekt als aktive Ansicht
- * (`NavigationContext`) aus; ist es bereits aktiv, wird das hervorgehoben.
+ * (`NavigationContext`) aus.
  *
  * @param props die Property
  * @param props.project das Projekt
  */
 export function ProjectButton({ project }: ProjectButtonProps) {
 	const [isHovered, setIsHovered] = useState<boolean>()
-	const { activeView, setActiveView } = useNavigation();
-	const isActive = activeView.kind === "project" && activeView.projectId === project.id;
+	const { setActiveView } = useNavigation();
 
 	return (
 		<button
@@ -30,9 +29,7 @@ export function ProjectButton({ project }: ProjectButtonProps) {
 				alignItems: "center",
 				gap: "0.4rem",
 				color: "var(--primary)",
-				backgroundColor: isActive
-					? "var(--accent)"
-					: isHovered
+				backgroundColor: isHovered
 						? "color-mix(in srgb, var(--background) 80%, white)"
 						: "var(--foreground)",
 			}}

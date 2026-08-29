@@ -11,7 +11,7 @@ const roots = [
 
 // Diese Dateinamen sind durch Node/Vite-Konventionen (Modulauflösung,
 // index.html-Referenz) vorgegeben und bleiben bewusst klein geschrieben.
-const allowedLowercase = new Set(["index.ts", "index.tsx", "main.tsx"]);
+const allowedLowercase = new Set(["index.ts", "index.tsx", "main.tsx", "vite-env.d.ts"]);
 
 const pascalCase = /^[A-Z][A-Za-z0-9]*$/;
 

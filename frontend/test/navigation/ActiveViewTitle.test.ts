@@ -16,11 +16,11 @@ describe("titleForActiveView", () => {
 		expect(titleForActiveView({ kind: "inbox" }, projects)).toBe("Inbox");
 	});
 
-	it("gibt \"Heute\" zurück", () => {
-		expect(titleForActiveView({ kind: "today" }, projects)).toBe("Heute");
+	it("gibt \"Today\" zurück", () => {
+		expect(titleForActiveView({ kind: "today" }, projects)).toBe("Today");
 	});
 
-	it("gibt \"Demnächst\" zurück", () => {
-		expect(titleForActiveView({ kind: "upcoming" }, projects)).toBe("Demnächst");
+	it("gibt \"Upcoming\" zurück", () => {
+		expect(titleForActiveView({ kind: "upcoming" }, projects)).toBe("Upcoming");
 	});
 });

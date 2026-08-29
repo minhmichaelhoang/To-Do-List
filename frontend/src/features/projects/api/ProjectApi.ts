@@ -1,6 +1,7 @@
 import type { ProjectDto } from "shared";
+import { API_BASE_URL } from "@/shared/ApiConfig";
 
-const BASE_URL = "http://localhost:3000/projects";
+const BASE_URL = `${API_BASE_URL}/projects`;
 
 /**
  * HTTP-Client für die Project-Ressource des Backends – analog zu `TaskApi`.

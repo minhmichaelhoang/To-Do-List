@@ -7,7 +7,7 @@ import { Pool } from "pg";
  * gegen eine echte Postgres-Datenbank über den `pg`-Pool – analog zu
  * `PostgreTaskRepository`. Erwartet eine Tabelle `project (id, name, color)`.
  */
-class PostgreProjectRepository implements ProjectRepository {
+export class PostgreProjectRepository implements ProjectRepository {
 	constructor(private readonly pool: Pool) {}
 
 	async findAll(): Promise<Project[]> {

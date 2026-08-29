@@ -8,7 +8,7 @@ import { Pool } from "pg";
  * `task (id, title, description, project_id, date, time)`. Alle Queries sind parametrisiert
  * (`$1`, `$2`, ...), um SQL-Injection zu verhindern.
  */
-class PostgreTaskRepository implements TaskRepository {
+export class PostgreTaskRepository implements TaskRepository {
 	constructor(private readonly pool: Pool) {}
 
 	async findAll(): Promise<Task[]> {

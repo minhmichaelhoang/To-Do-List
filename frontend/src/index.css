@@ -25,6 +25,10 @@ strong {
 	font-size: var(--default-font-size);
 }
 
+select {
+	color: var(--accent);
+}
+
 span {
 	font-size: var(--default-font-size);
 }
@@ -35,7 +39,7 @@ body {
 
 button {
 	cursor: pointer;
-	transition: background-color 0.4s ease;
+	transition: background-color 0.2s ease;
 	font-size: var(--default-font-size);
 	border-radius: 0.5rem;
 	padding: 0.5rem;
@@ -43,6 +47,7 @@ button {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	color: var(--primary);
 }
 
 .container {

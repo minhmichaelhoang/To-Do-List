@@ -2,16 +2,25 @@
  * Composition Root für die HTTP-Variante. Verdrahtet konkrete Adapter mit
  * Use Cases (Dependency Injection von Hand) und startet den Express-Server.
  * Einziger Ort im Projekt, der sowohl die Driven-Adapter-Implementierung
- * (`InMemoryTaskRepository`/`InMemoryProjectRepository`) als auch die
- * Driving Adapter (`TaskRouter`/`ProjectRouter`) kennt – Domain, Ports und
- * Use Cases bleiben davon unberührt.
+ * (`InMemory*`/`Postgre*`) als auch die Driving Adapter (`TaskRouter`/
+ * `ProjectRouter`) kennt – Domain, Ports und Use Cases bleiben davon
+ * unberührt. Persistenz wird zur Laufzeit gewählt: ist `DATABASE_URL`
+ * gesetzt, laufen die Postgres-Adapter gegen diese Datenbank (Schema siehe
+ * `db/schema.sql`); sonst die In-Memory-Adapter mit fester Seed-Daten, wie
+ * bisher für die lokale Entwicklung ohne DB-Setup.
  */
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import { Pool } from "pg";
 import { Task } from "./Domain/Task";
 import { Project } from "./Domain/Project";
+import { TaskRepository } from "./Ports/TaskRepository";
+import { ProjectRepository } from "./Ports/ProjectRepository";
 import { InMemoryTaskRepository } from "./Adapter/InMemoryTaskRepository";
 import { InMemoryProjectRepository } from "./Adapter/InMemoryProjectRepository";
+import { PostgreTaskRepository } from "./Adapter/PostgreTaskRepository";
+import { PostgreProjectRepository } from "./Adapter/PostgreProjectRepository";
 import { ListTasks } from "./Application/ListTasks";
 import { ListProjects } from "./Application/ListProjects";
 import { AddTask } from "./Application/AddTask";
@@ -21,7 +30,16 @@ import { createProjectRouter } from "./Http/ProjectRouter";
 import {DeleteTask} from "./Application/DeleteTask";
 import {EditTask} from "./Application/EditTask";
 
-async function main() {
+async function createRepositories(): Promise<{ taskRepository: TaskRepository; projectRepository: ProjectRepository }> {
+	if (process.env.DATABASE_URL) {
+		const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+		console.log("Persistenz: Postgres (DATABASE_URL gesetzt)");
+		return {
+			taskRepository: new PostgreTaskRepository(pool),
+			projectRepository: new PostgreProjectRepository(pool),
+		};
+	}
+
 	const projectRepository = new InMemoryProjectRepository();
 	const schule = new Project("Schule");
 	const alltag = new Project("Alltag", "#074e6a");
@@ -33,8 +51,15 @@ async function main() {
 	const taskRepository = new InMemoryTaskRepository([
 		new Task("Hausaufgaben machen", "Mathe Seite 3, Aufgabe 4", schule.id),
 		new Task("Einkaufen", "Milch, Brot, Eier", alltag.id),
-		new Task("Wäsche waschen", "Nur Buntwäsche waschen", privat.id)
+		new Task("Wäsche waschen", "Nur Buntwäsche waschen", privat.id),
 	]);
+
+	console.log("Persistenz: In-Memory (keine DATABASE_URL gesetzt)");
+	return { taskRepository, projectRepository };
+}
+
+async function main() {
+	const { taskRepository, projectRepository } = await createRepositories();
 
 	const findOrCreateProject = new FindOrCreateProject(projectRepository);
 	const listTasks = new ListTasks(taskRepository);
@@ -49,7 +74,7 @@ async function main() {
 	app.use(createTaskRouter(listTasks, addTask, deleteTask, editTask, projectRepository));
 	app.use(createProjectRouter(listProjects));
 
-	const port = 3000;
+	const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 	app.listen(port, () => {
 		console.log(`Server läuft auf http://localhost:${port}`);
 	});

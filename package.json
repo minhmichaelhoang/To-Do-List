@@ -10,7 +10,7 @@
 		"check:docs": "eslint .",
 		"test": "vitest run",
 		"check:coverage": "vitest run --coverage",
-		"prepare": "husky"
+		"prepare": "husky || true"
 	},
 	"workspaces": [
 		"backend",

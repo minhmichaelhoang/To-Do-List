@@ -1,6 +1,7 @@
 import type { CreateTaskDto, EditTaskDto, TaskDto } from "shared";
+import { API_BASE_URL } from "@/shared/ApiConfig";
 
-const BASE_URL = "http://localhost:3000/tasks";
+const BASE_URL = `${API_BASE_URL}/tasks`;
 
 /**
  * HTTP-Client für die Task-Ressource des Backends – einziger Ort im

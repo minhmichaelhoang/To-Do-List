@@ -62,7 +62,7 @@ describe("ListLayout", () => {
 			</AllProviders>,
 		);
 
-		await userEvent.selectOptions(screen.getByLabelText("Sortieren nach"), "name");
+		await userEvent.selectOptions(screen.getByLabelText("Sort by"), "name");
 
 		const titleElements = document.querySelectorAll("strong");
 		expect(Array.from(titleElements).map((el) => el.textContent)).toEqual(["Apfel", "Banane"]);

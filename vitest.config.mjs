@@ -15,6 +15,7 @@ export default defineConfig({
 				"backend/src/Domain/**",
 				"backend/src/Application/**",
 				"frontend/src/shared/components/**",
+				"frontend/src/shared/hooks/**",
 				"frontend/src/features/*/components/**",
 				"frontend/src/features/*/api/**",
 				"frontend/src/layouts/**",

@@ -44,7 +44,7 @@ export function ListLayout({ title, tasks }: TaskListViewProps) {
 			</h1>
 
 			<div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem", alignItems: "center" }}>
-				<label htmlFor="sort-by" style={{ color: "var(--primary)" }}>Sortieren nach</label>
+				<label htmlFor="sort-by" style={{ color: "var(--primary)" }}>Sort by</label>
 				<select
 					id="sort-by"
 					value={sortBy}
