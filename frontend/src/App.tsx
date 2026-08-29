@@ -1,38 +1,28 @@
-import { useState } from "react";
-import type { TaskDto } from "shared";
-import { AddButton } from "@/features/tasks/components/AddButton";
 import { useTasks } from "@/features/tasks/context/TasksContext";
 import { useProjects } from "@/features/projects/context/ProjectsContext";
-import {NavigationBar} from "@/features/projects/components/NavigationBar.tsx";
-import {TaskList} from "@/features/tasks/components/TaskList.tsx";
-
-type SortBy = "date" | "name";
+import { NavigationBar } from "@/navigation/NavigationBar.tsx";
+import { useNavigation } from "@/navigation/NavigationContext";
+import { filterTasksByActiveView } from "@/navigation/FilterTasksByActiveView";
+import { titleForActiveView } from "@/navigation/ActiveViewTitle";
+import { taskLayouts } from "@/layouts";
 
 /**
- * Vergleicht zwei Tasks nach Datum/Uhrzeit, aufsteigend (frühestes zuerst).
- * Tasks ohne Datum landen ans Ende, da anstehende Termine wichtiger sind
- * als Tasks ohne Deadline. Fehlende Uhrzeit zählt als Tagesbeginn (00:00).
- * String-Vergleich reicht, da "YYYY-MM-DDTHH:mm" lexikografisch bereits
- * chronologisch sortiert ist.
+ * Treibender Client der REST-API. Holt Tasks/Projekte aus den Contexts,
+ * filtert sie anhand der aktiven Ansicht (`NavigationContext.activeView`)
+ * und übergibt Titel + Tasks nur als Props an das aktuell gewählte Layout
+ * (`layouts/`) – das Layout selbst kennt weder `TasksContext` noch
+ * `ProjectsContext` noch `NavigationContext`.
  */
-function compareByDate(a: TaskDto, b: TaskDto): number {
-	if (!a.date && !b.date) return 0;
-	if (!a.date) return 1;
-	if (!b.date) return -1;
-	return `${a.date}T${a.time ?? "00:00"}`.localeCompare(`${b.date}T${b.time ?? "00:00"}`);
-}
-
-/** Treibender Client der REST-API: liest Tasks aus dem `TasksContext` und rendert die Liste. */
 function App() {
 	const { tasks } = useTasks();
-	const { projects, selectedProject } = useProjects();
-	const [sortBy, setSortBy] = useState<SortBy>("date");
+	const { projects } = useProjects();
+	const { activeView, layout } = useNavigation();
 
-	const sortedTasks = [...tasks].sort((a, b) =>
-		sortBy === "name" ? a.title.localeCompare(b.title) : compareByDate(a, b),
-	);
-	const sortedProjects = [...projects].sort((a, b) =>
-		a.name.localeCompare(b.name));
+	const sortedProjects = [...projects].sort((a, b) => a.name.localeCompare(b.name));
+	const visibleTasks = filterTasksByActiveView(tasks, activeView);
+	const title = titleForActiveView(activeView, projects);
+
+	const TaskLayout = taskLayouts[layout];
 
 	return (
 		<div style={{ display: "flex", flexDirection: "row" }}>
@@ -42,35 +32,11 @@ function App() {
 				padding: "2rem",
 				maxWidth: "50rem",
 				margin: "0 auto",
-
 				display: "flex",
 				flexDirection: "column",
 				alignContent: "center",
 			}}>
-				<h1 style={{
-					textAlign: "center",
-					color: "var(--primary)",
-					fontWeight: "bold",
-				}}>
-					{selectedProject?.name ?? "To Do List"}
-				</h1>
-				<div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem", alignItems: "center" }}>
-					<label htmlFor="sort-by" style={{ color: "var(--primary)" }}>Sortieren nach</label>
-					<select
-						id="sort-by"
-						value={sortBy}
-						onChange={(e) => setSortBy(e.target.value as SortBy)}
-					>
-						<option value="date">Datum &amp; Uhrzeit</option>
-						<option value="name">Name</option>
-					</select>
-				</div>
-
-				<TaskList tasks={sortedTasks} />
-
-				<div style={{ display: "flex", justifyContent: "center" }}>
-					<AddButton />
-				</div>
+				<TaskLayout title={title} tasks={visibleTasks} />
 			</div>
 		</div>
 	);

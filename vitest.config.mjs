@@ -17,6 +17,8 @@ export default defineConfig({
 				"frontend/src/shared/components/**",
 				"frontend/src/features/*/components/**",
 				"frontend/src/features/*/api/**",
+				"frontend/src/layouts/**",
+				"frontend/src/navigation/**",
 			],
 			thresholds: {
 				statements: 70,

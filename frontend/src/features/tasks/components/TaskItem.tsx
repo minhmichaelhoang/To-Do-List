@@ -1,8 +1,8 @@
 import type {TaskDto} from "shared/src/TaskDto.ts";
-import {Checkbox} from "@/features/tasks/components/Checkbox.tsx";
+import { Checkbox } from "@/features/tasks/components/Checkbox.tsx";
 import { useState} from "react";
-import {ViewTaskModal} from "@/features/tasks/components/ViewTaskModal.tsx";
-import {ProjectDisplay} from "@/features/projects/components/ProjectDisplay.tsx";
+import { ViewTaskModal } from "@/features/tasks/components/ViewTaskModal.tsx";
+import { ProjectDisplay } from "@/features/projects/components/ProjectDisplay.tsx";
 
 interface TaskItemProps {
 	task: TaskDto;
