@@ -64,3 +64,29 @@ describe("Task Titellänge", () => {
 		expect(() => (task.title = "a".repeat(51))).toThrow();
 	});
 });
+
+describe("Task Setter", () => {
+	it("überschreibt Description, projectId, date und time", () => {
+		const task = new Task("Titel", "Beschreibung", "project-id");
+
+		task.Description = "Neue Beschreibung";
+		task.projectId = "anderes-project-id";
+		task.date = "2099-01-01";
+		task.time = "10:00";
+
+		expect(task.Description).toBe("Neue Beschreibung");
+		expect(task.projectId).toBe("anderes-project-id");
+		expect(task.date).toBe("2099-01-01");
+		expect(task.time).toBe("10:00");
+	});
+
+	it("erlaubt, date und time wieder auf undefined zu setzen", () => {
+		const task = new Task("Titel", "Beschreibung", "project-id", "2099-01-01", "10:00");
+
+		task.date = undefined;
+		task.time = undefined;
+
+		expect(task.date).toBeUndefined();
+		expect(task.time).toBeUndefined();
+	});
+});

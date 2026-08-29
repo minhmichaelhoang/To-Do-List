@@ -67,4 +67,62 @@ describe("ListLayout", () => {
 		const titleElements = document.querySelectorAll("strong");
 		expect(Array.from(titleElements).map((el) => el.textContent)).toEqual(["Apfel", "Banane"]);
 	});
+
+	it("sortiert standardmäßig nach Datum, undatierte Tasks ans Ende", () => {
+		vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => [] }));
+
+		render(
+			<AllProviders>
+				<ListLayout
+					title="Titel"
+					tasks={[
+						makeTask({ id: "undated", title: "Undatiert" }),
+						makeTask({ id: "later", title: "Später", date: "2099-01-02" }),
+						makeTask({ id: "earlier", title: "Früher", date: "2099-01-01" }),
+					]}
+				/>
+			</AllProviders>,
+		);
+
+		const titleElements = document.querySelectorAll("strong");
+		expect(Array.from(titleElements).map((el) => el.textContent)).toEqual(["Früher", "Später", "Undatiert"]);
+	});
+
+	it("sortiert einen undatierten Task hinter einen einzelnen datierten Task (undatiert zuerst übergeben)", () => {
+		vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => [] }));
+
+		render(
+			<AllProviders>
+				<ListLayout
+					title="Titel"
+					tasks={[
+						makeTask({ id: "undated", title: "Undatiert" }),
+						makeTask({ id: "dated", title: "Datiert", date: "2099-01-01" }),
+					]}
+				/>
+			</AllProviders>,
+		);
+
+		const titleElements = document.querySelectorAll("strong");
+		expect(Array.from(titleElements).map((el) => el.textContent)).toEqual(["Datiert", "Undatiert"]);
+	});
+
+	it("sortiert einen undatierten Task hinter einen einzelnen datierten Task (datiert zuerst übergeben)", () => {
+		vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => [] }));
+
+		render(
+			<AllProviders>
+				<ListLayout
+					title="Titel"
+					tasks={[
+						makeTask({ id: "dated", title: "Datiert", date: "2099-01-01" }),
+						makeTask({ id: "undated", title: "Undatiert" }),
+					]}
+				/>
+			</AllProviders>,
+		);
+
+		const titleElements = document.querySelectorAll("strong");
+		expect(Array.from(titleElements).map((el) => el.textContent)).toEqual(["Datiert", "Undatiert"]);
+	});
 });

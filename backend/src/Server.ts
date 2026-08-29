@@ -71,6 +71,13 @@ async function main() {
 	const app = express();
 	app.use(cors()); // erlaubt Requests vom Vite-Dev-Server (andere Origin: Port 5173 statt 3000)
 	app.use(express.json()); // parst JSON-Request-Bodies nach req.body (für POST /tasks nötig)
+
+	// Health-Check für die nackte Root-URL – ohne diese Route antwortet Express dort mit
+	// 404, was z.B. Flys automatische Deploy-Prüfung sowie zufällige Aufrufe der Basis-URL fälschlich als Fehler meldet.
+	app.get("/", (_req, res) => {
+		res.json({ status: "ok" });
+	});
+
 	app.use(createTaskRouter(listTasks, addTask, deleteTask, editTask, projectRepository));
 	app.use(createProjectRouter(listProjects));
 

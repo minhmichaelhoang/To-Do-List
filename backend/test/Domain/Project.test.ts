@@ -20,4 +20,14 @@ describe("Project", () => {
 
 		expect(project.color).toBe("#ff0000");
 	});
+
+	it("überschreibt name und color über die Setter", () => {
+		const project = new Project("A");
+
+		project.name = "B";
+		project.color = "#00ff00";
+
+		expect(project.name).toBe("B");
+		expect(project.color).toBe("#00ff00");
+	});
 });

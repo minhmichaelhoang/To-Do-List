@@ -45,6 +45,17 @@ describe("TaskApi", () => {
 		);
 	});
 
+	it("createTask nutzt die Standardmeldung, wenn der Body keine message hat", async () => {
+		vi.stubGlobal(
+			"fetch",
+			vi.fn().mockResolvedValue({ ok: false, status: 500, json: async () => ({}) }),
+		);
+
+		await expect(createTask({ title: "Titel", description: "Beschreibung", project: "Projekt" })).rejects.toThrow(
+			/Status 500/,
+		);
+	});
+
 	it("updateTask schickt PUT an die Task-ID", async () => {
 		const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 204 });
 		vi.stubGlobal("fetch", fetchMock);
