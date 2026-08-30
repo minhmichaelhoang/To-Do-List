@@ -1,6 +1,6 @@
 # Frontend
 
-React + Vite + TypeScript Frontend, Teil des `practice-multithreading` npm-Workspaces-Monorepos (siehe `backend/` und `shared/` im Projekt-Root).
+React + Vite + TypeScript Frontend, Teil des `to-do-list` npm-Workspaces-Monorepos (siehe `backend/` und `shared/` im Projekt-Root).
 
 ## Entwicklung
 
