@@ -3,28 +3,24 @@ import type { ModalProps } from "@/shared/components/Modal";
 import { useState } from "react";
 import type { ChangeEvent, SubmitEvent } from "react";
 import { useTasks } from "@/features/tasks/context/TasksContext";
-import { useProjects } from "@/features/projects/context/ProjectsContext";
-import { createTask } from "@/features/tasks/api/TaskApi";
 
 interface CreateModalProps extends Pick<ModalProps, "open" | "onClose"> {}
 
 /**
  * Formular zum Anlegen einer neuen Aufgabe, gerendert innerhalb von `Modal`.
  * Hält Titel/Beschreibung/Projekt als Controlled-Components (`useState` pro
- * Feld) und schickt sie bei Submit per `POST /tasks` ans Backend. Nur bei
- * erfolgreicher Antwort werden Felder zurückgesetzt, `loadTasks` (aus dem
- * `TasksContext`) aufgerufen und das Modal geschlossen – bei einem Fehler
- * bleibt das Formular mit der Eingabe und einer Fehlermeldung (`submitError`) offen.
+ * Feld). Schließt bei Submit sofort und leert das Formular, ohne auf den
+ * Server zu warten – `createTaskOptimistically` (aus dem `TasksContext`)
+ * zeigt den Task sofort in der Liste an und kümmert sich im Hintergrund um
+ * Anlegen/Fehlerbehandlung/Abgleich mit dem Server.
  */
 export function CreateTaskModal({ open, onClose }: CreateModalProps) {
-		const { loadTasks } = useTasks();
-		const { loadProjects } = useProjects();
+		const { createTaskOptimistically } = useTasks();
 		const [title, setTitle] = useState("");
 		const [description, setDescription] = useState("");
 		const [project, setProject] = useState("");
 		const [date, setDate] = useState("");
 		const [time, setTime] = useState("");
-		const [submitError, setSubmitError] = useState("");
 
 	function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
 		const value = e.target.value;
@@ -51,24 +47,17 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 		}
 	}
 
-	async function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
+	function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
 		e.preventDefault();
-		setSubmitError("");
 
-		try {
-			await createTask({ title, description, project, date: date || undefined, time: time || undefined });
+		createTaskOptimistically({ title, description, project, date: date || undefined, time: time || undefined });
 
-			setTitle("");
-			setDescription("");
-			setProject("");
-			setDate("");
-			setTime("");
-			loadTasks();
-			loadProjects();
-			onClose();
-		} catch (error) {
-			setSubmitError(error instanceof Error ? error.message : "Unbekannter Fehler");
-		}
+		setTitle("");
+		setDescription("");
+		setProject("");
+		setDate("");
+		setTime("");
+		onClose();
 	}
 
 	return (
@@ -127,7 +116,6 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 					style={{ width: "100%", boxSizing: "border-box" }}
 				/>
 				<button type="submit" style={{ alignSelf: "flex-end" }}>Submit</button>
-				{submitError && <p style={{ color: "red" }}>{submitError}</p>}
 			</form>
 		</Modal>
 	);

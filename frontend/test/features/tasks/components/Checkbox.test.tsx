@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Checkbox } from "../../../../src/features/tasks/components/Checkbox";
-import { TasksProvider } from "../../../../src/features/tasks/context/TasksContext";
+import { AllProviders } from "../../../TestProviders";
 
 afterEach(() => {
 	vi.unstubAllGlobals();
@@ -14,9 +14,9 @@ describe("Checkbox", () => {
 		vi.stubGlobal("fetch", fetchMock);
 
 		render(
-			<TasksProvider>
+			<AllProviders>
 				<Checkbox taskId="abc-123" />
-			</TasksProvider>,
+			</AllProviders>,
 		);
 
 		await userEvent.click(screen.getByRole("button"));
@@ -25,26 +25,27 @@ describe("Checkbox", () => {
 			"http://localhost:3000/tasks/abc-123",
 			expect.objectContaining({ method: "DELETE" }),
 		);
-		// Mount-GET (TasksProvider) + DELETE + Reload-GET nach Erfolg
-		expect(fetchMock).toHaveBeenCalledTimes(3);
+		// Mount-GET Tasks + Mount-GET Projects + DELETE + Reload-GET Tasks nach Erfolg
+		expect(fetchMock).toHaveBeenCalledTimes(4);
 	});
 
 	it("zeigt eine Fehlermeldung, wenn das Löschen fehlschlägt, und lädt nicht neu", async () => {
 		const fetchMock = vi
 			.fn()
-			.mockResolvedValueOnce({ ok: true, status: 200, json: async () => [] }) // Mount-GET
+			.mockResolvedValueOnce({ ok: true, status: 200, json: async () => [] }) // Mount-GET (Tasks oder Projects)
+			.mockResolvedValueOnce({ ok: true, status: 200, json: async () => [] }) // Mount-GET (Tasks oder Projects)
 			.mockResolvedValueOnce({ ok: false, status: 500 }); // DELETE
 		vi.stubGlobal("fetch", fetchMock);
 
 		render(
-			<TasksProvider>
+			<AllProviders>
 				<Checkbox taskId="abc-123" />
-			</TasksProvider>,
+			</AllProviders>,
 		);
 
 		await userEvent.click(screen.getByRole("button"));
 
 		expect(await screen.findByText(/Fehler beim Löschen der Aufgabe/)).toBeInTheDocument();
-		expect(fetchMock).toHaveBeenCalledTimes(2);
+		expect(fetchMock).toHaveBeenCalledTimes(3);
 	});
 });

@@ -18,6 +18,7 @@ export default defineConfig({
 				"frontend/src/shared/hooks/**",
 				"frontend/src/features/*/components/**",
 				"frontend/src/features/*/api/**",
+				"frontend/src/features/*/context/**",
 				"frontend/src/layouts/**",
 				"frontend/src/navigation/**",
 			],
