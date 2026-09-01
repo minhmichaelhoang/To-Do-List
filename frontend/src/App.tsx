@@ -5,6 +5,7 @@ import { useNavigation } from "@/navigation/NavigationContext";
 import { filterTasksByActiveView } from "@/navigation/FilterTasksByActiveView";
 import { titleForActiveView } from "@/navigation/ActiveViewTitle";
 import { taskLayouts } from "@/layouts";
+import {CalendarModal} from "@/features/calendar/components/CalendarModal.tsx";
 
 /**
  * Treibender Client der REST-API. Holt Tasks/Projekte aus den Contexts,
@@ -24,7 +25,7 @@ function App() {
 
 	const TaskLayout = taskLayouts[layout];
 
-	return (
+	return (/*
 		<div style={{ display: "flex", flexDirection: "row" }}>
 			<NavigationBar projects={sortedProjects}/>
 			<div
@@ -38,6 +39,8 @@ function App() {
 				<TaskLayout title={title} tasks={visibleTasks} />
 			</div>
 		</div>
+		*/
+		<CalendarModal></CalendarModal>
 	);
 }
 

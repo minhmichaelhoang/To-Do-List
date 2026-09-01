@@ -17,21 +17,12 @@ h1 {
 	margin: 1rem
 }
 
-p {
-	font-size: var(--default-font-size);
-}
-
-strong {
-	font-size: var(--default-font-size);
-}
-
-select {
-	color: var(--accent);
-}
-
-span {
-	font-size: var(--default-font-size);
-}
+p {font-size: var(--default-font-size);}
+strong {font-size: var(--default-font-size);}
+select {font-size: var(--default-font-size); color: var(--accent);}
+span {font-size: var(--default-font-size);}
+label {font-size: var(--default-font-size);}
+table {font-size: var(--default-font-size);}
 
 body {
 	background: var(--background);
@@ -60,5 +51,19 @@ button {
 
 .foreground-button:hover {
 	background-color: color-mix(in srgb, var(--foreground) 90%, white);
+}
+
+.calendar-day {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+.calendar-day:hover {
+	background-color: color-mix(in srgb, var(--foreground) 80%, white);
 }
 
