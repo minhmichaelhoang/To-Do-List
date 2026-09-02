@@ -1,4 +1,5 @@
 import {useState} from "react";
+import type {ChangeEvent} from "react";
 import {Modal, type ModalProps} from "@/shared/components/Modal.tsx";
 import { formatIsoDate } from "shared";
 import { getCalendarWeeks } from "@/features/tasks/components/CalendarGrid";
@@ -10,12 +11,16 @@ interface CalendarModalProps extends Pick<ModalProps, "open" | "onClose"> {
 	time: string | undefined;
 	/** Aktuell gewählte Dauer in Minuten – kontrollierter Wert, gehört dem Aufrufer. */
 	duration: number | undefined;
+	/** Wiederholungsintervall in Tagen, optional – kontrollierter Wert, gehört dem Aufrufer. `0`/leer bedeuten "keine Wiederholung". */
+	repeat: number | undefined;
 	/** Wird bei Klick auf einen Tag aufgerufen, meldet das neue Datum nach oben statt es selbst zu halten. */
 	onDateChange: (date: string) => void;
 	/** Wird bei Änderung der Uhrzeit aufgerufen, meldet die neue Uhrzeit nach oben statt sie selbst zu halten. */
 	onTimeChange: (time: string) => void;
 	/** Wird bei Änderung der Dauer aufgerufen, meldet die neue Dauer nach oben statt sie selbst zu halten. */
 	onDurationChange: (duration: number) => void;
+	/** Wird bei gültiger Änderung von Repeat aufgerufen (nicht-negative Ganzzahl oder leer/`undefined`); ungültige Eingaben (negativ, Kommazahl) werden verworfen, ohne diesen Callback auszulösen. */
+	onRepeatChange: (repeat: number | undefined) => void;
 }
 
 const YEARS_RANGE = 6;
@@ -78,7 +83,7 @@ function generateDurationOptions(): Array<{value: number; label: string}> {
  * Tages-Grid über `getCalendarWeeks` (reine Funktion, kein `Date`-Mutieren)
  * und rendert es nur noch.
  */
-export function CalendarModal({open, onClose, date, time, duration, onDateChange, onTimeChange, onDurationChange}: CalendarModalProps) {
+export function CalendarModal({open, onClose, date, time, duration, repeat, onDateChange, onTimeChange, onDurationChange, onRepeatChange}: CalendarModalProps) {
 	const CUR_YEAR: number = new Date().getFullYear();
 	const CUR_MONTH: number = new Date().getMonth() + 1;
 
@@ -87,6 +92,21 @@ export function CalendarModal({open, onClose, date, time, duration, onDateChange
 
 	function handleDayClick(day: number) {
 		onDateChange(formatIsoDate(year, month, day));
+	}
+
+	/** `Wert < 0` und Kommazahlen sind keine gültige Eingabe – solche Eingaben werden ignoriert (State bleibt beim letzten gültigen Wert), statt sie mit einer Fehlermeldung abzulehnen (ein Zahlenfeld eignet sich nicht für das "Text durch Fehlermeldung ersetzen"-Muster der anderen Felder). */
+	function handleRepeatChange(e: ChangeEvent<HTMLInputElement>) {
+		const rawValue = e.target.value;
+		if (rawValue === "") {
+			onRepeatChange(undefined);
+			return;
+		}
+
+		const parsed = Number(rawValue);
+		if (!Number.isInteger(parsed) || parsed < 0) {
+			return;
+		}
+		onRepeatChange(parsed);
 	}
 
 	return (
@@ -171,6 +191,18 @@ export function CalendarModal({open, onClose, date, time, duration, onDateChange
 						<option key={value} value={value}>{label}</option>
 					))}
 				</select>
+			</div>
+
+			<div style={{display: "flex", justifyContent: "space-between"}}>
+				<label htmlFor={'repeat'}>Repeat (days): </label>
+				<input
+					id="repeat"
+					type="number"
+					min={0}
+					step={1}
+					value={repeat ?? ""}
+					onChange={handleRepeatChange}
+				/>
 			</div>
 		</Modal>
 	)

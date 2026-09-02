@@ -23,6 +23,7 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 		const [date, setDate] = useState("");
 		const [time, setTime] = useState("");
 		const [duration, setDuration] = useState<number>();
+		const [repeat, setRepeat] = useState<number>();
 
 	function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
 		const value = e.target.value;
@@ -52,7 +53,7 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 	function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
 		e.preventDefault();
 
-		createTaskOptimistically({ title, description, project, date: date || undefined, time: time || undefined, duration });
+		createTaskOptimistically({ title, description, project, date: date || undefined, time: time || undefined, duration, repeat });
 
 		setTitle("");
 		setDescription("");
@@ -60,6 +61,7 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 		setDate("");
 		setTime("");
 		setDuration(undefined);
+		setRepeat(undefined);
 		onClose();
 	}
 
@@ -109,9 +111,11 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 					date={date}
 					time={time}
 					duration={duration}
+					repeat={repeat}
 					onDateChange={setDate}
 					onTimeChange={setTime}
 					onDurationChange={setDuration}
+					onRepeatChange={setRepeat}
 				/>
 				<button type="submit" style={{ alignSelf: "flex-end" }}>Submit</button>
 			</form>

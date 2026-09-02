@@ -63,6 +63,33 @@ describe("AddTask", () => {
 		expect(task.duration).toBe(90);
 	});
 
+	it("übernimmt ein gesetztes repeat unverändert", async () => {
+		const { taskRepository, addTask } = setup();
+
+		await addTask.execute({ title: "Titel", description: "Beschreibung", project: "Projekt", repeat: 7 });
+
+		const [task] = await taskRepository.findAll();
+		expect(task.repeat).toBe(7);
+	});
+
+	it("lehnt ein negatives repeat ab", async () => {
+		const { taskRepository, addTask } = setup();
+
+		await expect(
+			addTask.execute({ title: "Titel", description: "Beschreibung", project: "Projekt", repeat: -1 }),
+		).rejects.toThrow();
+		expect(await taskRepository.findAll()).toHaveLength(0);
+	});
+
+	it("lehnt ein nicht-ganzzahliges repeat ab", async () => {
+		const { taskRepository, addTask } = setup();
+
+		await expect(
+			addTask.execute({ title: "Titel", description: "Beschreibung", project: "Projekt", repeat: 1.5 }),
+		).rejects.toThrow();
+		expect(await taskRepository.findAll()).toHaveLength(0);
+	});
+
 	it("lehnt ein Datum in der Vergangenheit ab", async () => {
 		const { taskRepository, addTask } = setup();
 

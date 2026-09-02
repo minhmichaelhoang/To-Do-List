@@ -58,7 +58,7 @@ describe("Task Titellänge", () => {
 });
 
 describe("Task Setter", () => {
-	it("überschreibt Description, projectId, date, time und duration", () => {
+	it("überschreibt Description, projectId, date, time, duration und repeat", () => {
 		const task = new Task("Titel", "Beschreibung", "project-id");
 
 		task.Description = "Neue Beschreibung";
@@ -66,24 +66,28 @@ describe("Task Setter", () => {
 		task.date = "2099-01-01";
 		task.time = "10:00";
 		task.duration = 90;
+		task.repeat = 7;
 
 		expect(task.Description).toBe("Neue Beschreibung");
 		expect(task.projectId).toBe("anderes-project-id");
 		expect(task.date).toBe("2099-01-01");
 		expect(task.time).toBe("10:00");
 		expect(task.duration).toBe(90);
+		expect(task.repeat).toBe(7);
 	});
 
-	it("erlaubt, date, time und duration wieder auf undefined zu setzen", () => {
-		const task = new Task("Titel", "Beschreibung", "project-id", "2099-01-01", "10:00", 90);
+	it("erlaubt, date, time, duration und repeat wieder auf undefined zu setzen", () => {
+		const task = new Task("Titel", "Beschreibung", "project-id", "2099-01-01", "10:00", 90, 7);
 
 		task.date = undefined;
 		task.time = undefined;
 		task.duration = undefined;
+		task.repeat = undefined;
 
 		expect(task.date).toBeUndefined();
 		expect(task.time).toBeUndefined();
 		expect(task.duration).toBeUndefined();
+		expect(task.repeat).toBeUndefined();
 	});
 });
 
@@ -98,5 +102,45 @@ describe("Task duration", () => {
 		const task = new Task("Titel", "Beschreibung", "project-id");
 
 		expect(task.duration).toBeUndefined();
+	});
+});
+
+describe("Task repeat", () => {
+	it("übernimmt das im Konstruktor übergebene repeat", () => {
+		const task = new Task("Titel", "Beschreibung", "project-id", "2099-01-01", "10:00", 60, 7);
+
+		expect(task.repeat).toBe(7);
+	});
+
+	it("ist undefined, wenn kein repeat übergeben wird", () => {
+		const task = new Task("Titel", "Beschreibung", "project-id");
+
+		expect(task.repeat).toBeUndefined();
+	});
+
+	it("erlaubt 0 als gültigen Wert (fachlich: keine Wiederholung)", () => {
+		expect(() => new Task("Titel", "Beschreibung", "project-id", undefined, undefined, undefined, 0)).not.toThrow();
+	});
+
+	it("erlaubt beliebige positive Ganzzahlen", () => {
+		expect(() => new Task("Titel", "Beschreibung", "project-id", undefined, undefined, undefined, 365)).not.toThrow();
+	});
+
+	it("wirft im Konstruktor bei einem negativen Wert", () => {
+		expect(() => new Task("Titel", "Beschreibung", "project-id", undefined, undefined, undefined, -1)).toThrow();
+	});
+
+	it("wirft im Konstruktor bei einer Kommazahl", () => {
+		expect(() => new Task("Titel", "Beschreibung", "project-id", undefined, undefined, undefined, 1.5)).toThrow();
+	});
+
+	it("wirft im Setter bei einem negativen Wert", () => {
+		const task = new Task("Titel", "Beschreibung", "project-id");
+		expect(() => (task.repeat = -1)).toThrow();
+	});
+
+	it("wirft im Setter bei einer Kommazahl", () => {
+		const task = new Task("Titel", "Beschreibung", "project-id");
+		expect(() => (task.repeat = 2.5)).toThrow();
 	});
 });

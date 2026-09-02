@@ -66,6 +66,7 @@ export function TasksProvider({ children }: { children: ReactNode }) {
 			date: data.date,
 			time: data.time,
 			duration: data.duration,
+			repeat: data.repeat,
 		};
 
 		setTasks((current) => [...current, optimisticTask]);

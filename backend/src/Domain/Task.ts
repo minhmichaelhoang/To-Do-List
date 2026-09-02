@@ -23,9 +23,11 @@ export class Task {
 		private _date?: string,
 		private _time?: string,
 		private _duration?: number,
+		private _repeat?: number,
 		id: string = randomUUID() // Attribut ist ein Default-Wert und  wird nicht als Parameter übergeben, daher ist das am Ende
 	) {
 		Task.assertValidTitle(_title);
+		Task.assertValidRepeat(_repeat);
 		this._id = id;
 	}
 
@@ -83,6 +85,16 @@ export class Task {
 		this._duration = duration;
 	}
 
+	/** Wiederholungsintervall in Tagen, optional. `0` oder `undefined` bedeuten "keine Wiederholung". */
+	get repeat() {
+		return this._repeat;
+	}
+
+	set repeat(repeat: number | undefined) {
+		Task.assertValidRepeat(repeat);
+		this._repeat = repeat;
+	}
+
 	/**
 	 * Liefert das effektive Datum für eine Eingabe: das übergebene `date`,
 	 * oder – falls nur `time` gesetzt ist – das heutige Datum, da eine
@@ -124,6 +136,22 @@ export class Task {
 	private static assertValidTitle(title: string): void {
 		if (title.length > Task.MAX_TITLE_LENGTH) {
 			throw new Error(`Der Titel darf höchstens ${Task.MAX_TITLE_LENGTH} Zeichen lang sein.`);
+		}
+	}
+
+	/**
+	 * Prüft, dass `repeat` (falls gesetzt) eine nicht-negative Ganzzahl ist –
+	 * eine immer gültige Invariante (anders als "nicht in der Vergangenheit"
+	 * bei Datum/Uhrzeit), daher direkt im Konstruktor/Setter erzwungen.
+	 * `0` ist ein gültiger Wert, wird aber fachlich als "keine Wiederholung"
+	 * behandelt (wie ein nicht gesetzter Wert).
+	 */
+	private static assertValidRepeat(repeat: number | undefined): void {
+		if (repeat === undefined) {
+			return;
+		}
+		if (!Number.isInteger(repeat) || repeat < 0) {
+			throw new Error("Repeat muss eine nicht-negative Ganzzahl sein.");
 		}
 	}
 }

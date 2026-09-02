@@ -9,9 +9,12 @@ interface AddDateButtonProps {
 	time: string | undefined;
 	/** Aktuell gewählte Dauer in Minuten – kontrollierter Wert, gehört dem Aufrufer. */
 	duration: number | undefined;
+	/** Wiederholungsintervall in Tagen, optional – kontrollierter Wert, gehört dem Aufrufer. */
+	repeat: number | undefined;
 	onDateChange: (date: string) => void;
 	onTimeChange: (time: string) => void;
 	onDurationChange: (duration: number) => void;
+	onRepeatChange: (repeat: number | undefined) => void;
 }
 
 /**
@@ -22,7 +25,7 @@ interface AddDateButtonProps {
  * Titel/Beschreibung/Projekt zusammen submittet) und werden nur an
  * `CalendarModal` durchgereicht, nicht hier gehalten.
  */
-export function AddDateButton({ date, time, duration, onDateChange, onTimeChange, onDurationChange }: AddDateButtonProps) {
+export function AddDateButton({ date, time, duration, repeat, onDateChange, onTimeChange, onDurationChange, onRepeatChange }: AddDateButtonProps) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isHovered, setIsHovered] = useState(false);
 
@@ -44,9 +47,11 @@ export function AddDateButton({ date, time, duration, onDateChange, onTimeChange
 				date={date}
 				time={time}
 				duration={duration}
+				repeat={repeat}
 				onDateChange={onDateChange}
 				onTimeChange={onTimeChange}
 				onDurationChange={onDurationChange}
+				onRepeatChange={onRepeatChange}
 			/>
 		</>
 	);

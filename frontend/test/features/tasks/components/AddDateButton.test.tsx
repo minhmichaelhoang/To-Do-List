@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { AddDateButton } from "../../../../src/features/tasks/components/AddDateButton";
 
@@ -12,9 +12,11 @@ describe("AddDateButton", () => {
 				date=""
 				time={undefined}
 				duration={undefined}
+				repeat={undefined}
 				onDateChange={noop}
 				onTimeChange={noop}
 				onDurationChange={noop}
+				onRepeatChange={noop}
 			/>,
 		);
 
@@ -27,9 +29,11 @@ describe("AddDateButton", () => {
 				date="2099-01-01"
 				time="10:00"
 				duration={undefined}
+				repeat={undefined}
 				onDateChange={noop}
 				onTimeChange={noop}
 				onDurationChange={noop}
+				onRepeatChange={noop}
 			/>,
 		);
 
@@ -42,9 +46,11 @@ describe("AddDateButton", () => {
 				date="2099-01-01"
 				time={undefined}
 				duration={undefined}
+				repeat={undefined}
 				onDateChange={noop}
 				onTimeChange={noop}
 				onDurationChange={noop}
+				onRepeatChange={noop}
 			/>,
 		);
 
@@ -57,9 +63,11 @@ describe("AddDateButton", () => {
 				date=""
 				time={undefined}
 				duration={undefined}
+				repeat={undefined}
 				onDateChange={noop}
 				onTimeChange={noop}
 				onDurationChange={noop}
+				onRepeatChange={noop}
 			/>,
 		);
 
@@ -76,9 +84,11 @@ describe("AddDateButton", () => {
 				date=""
 				time={undefined}
 				duration={undefined}
+				repeat={undefined}
 				onDateChange={noop}
 				onTimeChange={noop}
 				onDurationChange={noop}
+				onRepeatChange={noop}
 			/>,
 		);
 
@@ -100,9 +110,11 @@ describe("AddDateButton", () => {
 				date=""
 				time={undefined}
 				duration={undefined}
+				repeat={undefined}
 				onDateChange={onDateChange}
 				onTimeChange={noop}
 				onDurationChange={noop}
+				onRepeatChange={noop}
 			/>,
 		);
 
@@ -110,5 +122,115 @@ describe("AddDateButton", () => {
 		await userEvent.click(screen.getByText("15"));
 
 		expect(onDateChange).toHaveBeenCalledOnce();
+	});
+
+	it("ruft onRepeatChange mit einer gültigen positiven Ganzzahl auf", async () => {
+		const onRepeatChange = vi.fn();
+
+		render(
+			<AddDateButton
+				date=""
+				time={undefined}
+				duration={undefined}
+				repeat={undefined}
+				onDateChange={noop}
+				onTimeChange={noop}
+				onDurationChange={noop}
+				onRepeatChange={onRepeatChange}
+			/>,
+		);
+
+		await userEvent.click(screen.getByText("Add Date"));
+		fireEvent.change(screen.getByLabelText("Repeat (days):"), { target: { value: "7" } });
+
+		expect(onRepeatChange).toHaveBeenCalledWith(7);
+	});
+
+	it("ruft onRepeatChange mit 0 auf (gültige Eingabe, fachlich \"keine Wiederholung\")", async () => {
+		const onRepeatChange = vi.fn();
+
+		render(
+			<AddDateButton
+				date=""
+				time={undefined}
+				duration={undefined}
+				repeat={undefined}
+				onDateChange={noop}
+				onTimeChange={noop}
+				onDurationChange={noop}
+				onRepeatChange={onRepeatChange}
+			/>,
+		);
+
+		await userEvent.click(screen.getByText("Add Date"));
+		fireEvent.change(screen.getByLabelText("Repeat (days):"), { target: { value: "0" } });
+
+		expect(onRepeatChange).toHaveBeenCalledWith(0);
+	});
+
+	it("ruft onRepeatChange mit undefined auf, wenn das Feld geleert wird", async () => {
+		const onRepeatChange = vi.fn();
+
+		render(
+			<AddDateButton
+				date=""
+				time={undefined}
+				duration={undefined}
+				repeat={5}
+				onDateChange={noop}
+				onTimeChange={noop}
+				onDurationChange={noop}
+				onRepeatChange={onRepeatChange}
+			/>,
+		);
+
+		await userEvent.click(screen.getByText("Add Date"));
+		fireEvent.change(screen.getByLabelText("Repeat (days):"), { target: { value: "" } });
+
+		expect(onRepeatChange).toHaveBeenCalledWith(undefined);
+	});
+
+	it("ignoriert eine negative Eingabe (ruft onRepeatChange nicht auf)", async () => {
+		const onRepeatChange = vi.fn();
+
+		render(
+			<AddDateButton
+				date=""
+				time={undefined}
+				duration={undefined}
+				repeat={undefined}
+				onDateChange={noop}
+				onTimeChange={noop}
+				onDurationChange={noop}
+				onRepeatChange={onRepeatChange}
+			/>,
+		);
+
+		await userEvent.click(screen.getByText("Add Date"));
+		fireEvent.change(screen.getByLabelText("Repeat (days):"), { target: { value: "-1" } });
+
+		expect(onRepeatChange).not.toHaveBeenCalled();
+	});
+
+	it("ignoriert eine Kommazahl-Eingabe (ruft onRepeatChange nicht auf)", async () => {
+		const onRepeatChange = vi.fn();
+
+		render(
+			<AddDateButton
+				date=""
+				time={undefined}
+				duration={undefined}
+				repeat={undefined}
+				onDateChange={noop}
+				onTimeChange={noop}
+				onDurationChange={noop}
+				onRepeatChange={onRepeatChange}
+			/>,
+		);
+
+		await userEvent.click(screen.getByText("Add Date"));
+		fireEvent.change(screen.getByLabelText("Repeat (days):"), { target: { value: "1.5" } });
+
+		expect(onRepeatChange).not.toHaveBeenCalled();
 	});
 });

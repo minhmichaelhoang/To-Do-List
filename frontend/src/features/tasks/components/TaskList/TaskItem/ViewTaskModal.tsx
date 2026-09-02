@@ -31,6 +31,7 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 	const [date, setDate] = useState(task.date ?? "");
 	const [time, setTime] = useState(task.time ?? "");
 	const [duration, setDuration] = useState(task.duration);
+	const [repeat, setRepeat] = useState(task.repeat);
 	const [submitError, setSubmitError] = useState("");
 
 	useEffect(() => {
@@ -41,6 +42,7 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 			setDate(task.date ?? "");
 			setTime(task.time ?? "");
 			setDuration(task.duration);
+			setRepeat(task.repeat);
 			setSubmitError("");
 		}
 	}, [open, task]);
@@ -75,7 +77,7 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 		setSubmitError("");
 
 		try {
-			await updateTask({ id: task.id, title, description, project, date: date || undefined, time: time || undefined, duration });
+			await updateTask({ id: task.id, title, description, project, date: date || undefined, time: time || undefined, duration, repeat });
 
 			loadTasks();
 			loadProjects();
@@ -137,9 +139,11 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 					date={date}
 					time={time}
 					duration={duration}
+					repeat={repeat}
 					onDateChange={setDate}
 					onTimeChange={setTime}
 					onDurationChange={setDuration}
+					onRepeatChange={setRepeat}
 				/>
 				<button
 					type="submit"

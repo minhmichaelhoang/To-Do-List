@@ -5,7 +5,7 @@ import { Pool } from "pg";
 /**
  * Driven Adapter (Secondary Adapter). Implementiert `TaskRepository` gegen
  * eine echte Postgres-Datenbank über den `pg`-Pool. Erwartet eine Tabelle
- * `task (id, title, description, project_id, date, time, duration)`. Alle Queries sind parametrisiert
+ * `task (id, title, description, project_id, date, time, duration, repeat)`. Alle Queries sind parametrisiert
  * (`$1`, `$2`, ...), um SQL-Injection zu verhindern.
  */
 export class PostgreTaskRepository implements TaskRepository {
@@ -16,7 +16,7 @@ export class PostgreTaskRepository implements TaskRepository {
 			"SELECT * " + "FROM task " + "ORDER BY title ASC;",
 		);
 		return result.rows.map(
-			(row) => new Task(row.title, row.description, row.project_id, row.date, row.time, row.duration, row.id),
+			(row) => new Task(row.title, row.description, row.project_id, row.date, row.time, row.duration, row.repeat, row.id),
 		);
 	}
 
@@ -29,14 +29,14 @@ export class PostgreTaskRepository implements TaskRepository {
 			[`%${letters}%`],
 		);
 		return result.rows.map(
-			(row) => new Task(row.title, row.description, row.project_id, row.date, row.time, row.duration, row.id),
+			(row) => new Task(row.title, row.description, row.project_id, row.date, row.time, row.duration, row.repeat, row.id),
 		);
 	}
 
 	async add(task: Task): Promise<void> {
 		await this.pool.query(
-			"INSERT INTO task (id, title, description, project_id, date, time, duration) " + "VALUES ($1, $2, $3, $4, $5, $6, $7);",
-			[task.id, task.title, task.Description, task.projectId, task.date, task.time, task.duration],
+			"INSERT INTO task (id, title, description, project_id, date, time, duration, repeat) " + "VALUES ($1, $2, $3, $4, $5, $6, $7, $8);",
+			[task.id, task.title, task.Description, task.projectId, task.date, task.time, task.duration, task.repeat],
 		);
 	}
 
@@ -46,8 +46,8 @@ export class PostgreTaskRepository implements TaskRepository {
 
 	async edit(task: Task): Promise<void> {
 		await this.pool.query(
-			"UPDATE task SET title = $1, description = $2, project_id = $3, date = $4, time = $5, duration = $6 " + "WHERE id = $7;",
-			[task.title, task.Description, task.projectId, task.date, task.time, task.duration, task.id],
+			"UPDATE task SET title = $1, description = $2, project_id = $3, date = $4, time = $5, duration = $6, repeat = $7 " + "WHERE id = $8;",
+			[task.title, task.Description, task.projectId, task.date, task.time, task.duration, task.repeat, task.id],
 		);
 	}
 }

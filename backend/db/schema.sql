@@ -15,5 +15,6 @@ CREATE TABLE IF NOT EXISTS task (
 	project_id  TEXT NOT NULL REFERENCES project (id),
 	date        TEXT,
 	time        TEXT,
-	duration    INTEGER
+	duration    INTEGER,
+	repeat      INTEGER
 );

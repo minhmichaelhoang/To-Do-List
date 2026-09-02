@@ -9,6 +9,8 @@ interface TaskFields {
 	time?: string;
 	/** Dauer in Minuten, optional. */
 	duration?: number;
+	/** Wiederholungsintervall in Tagen, optional. `0` oder nicht gesetzt bedeuten "keine Wiederholung". */
+	repeat?: number;
 }
 
 /**
