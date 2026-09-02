@@ -3,6 +3,7 @@ import { AddTask } from "../../src/Application/AddTask";
 import { FindOrCreateProject } from "../../src/Application/FindOrCreateProject";
 import { InMemoryTaskRepository } from "../../src/Adapter/InMemoryTaskRepository";
 import { InMemoryProjectRepository } from "../../src/Adapter/InMemoryProjectRepository";
+import { today } from "shared";
 
 function setup() {
 	const taskRepository = new InMemoryTaskRepository();
@@ -45,14 +46,21 @@ describe("AddTask", () => {
 
 	it("setzt bei nur gesetzter Uhrzeit automatisch das heutige Datum", async () => {
 		const { taskRepository, addTask } = setup();
-		const now = new Date();
-		const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
 		await addTask.execute({ title: "Titel", description: "Beschreibung", project: "Projekt", time: "23:59" });
 
 		const [task] = await taskRepository.findAll();
-		expect(task.date).toBe(today);
+		expect(task.date).toBe(today());
 		expect(task.time).toBe("23:59");
+	});
+
+	it("übernimmt eine gesetzte duration unverändert", async () => {
+		const { taskRepository, addTask } = setup();
+
+		await addTask.execute({ title: "Titel", description: "Beschreibung", project: "Projekt", duration: 90 });
+
+		const [task] = await taskRepository.findAll();
+		expect(task.duration).toBe(90);
 	});
 
 	it("lehnt ein Datum in der Vergangenheit ab", async () => {

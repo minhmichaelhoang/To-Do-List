@@ -39,6 +39,7 @@ export function createTaskRouter(
 			project: { id: project.id, name: project.name, color: project.color },
 			date: task.date,
 			time: task.time,
+			duration: task.duration,
 		};
 	}
 
@@ -64,9 +65,9 @@ export function createTaskRouter(
 
 	router.put("/tasks/:id", async (req, res) => {
 		const { id } = req.params;
-		const { title, description, project, date, time } = req.body;
+		const { title, description, project, date, time, duration } = req.body;
 		try {
-			await editTask.execute({ id, title, description, project, date, time });
+			await editTask.execute({ id, title, description, project, date, time, duration });
 			res.status(204).send();
 		} catch (error) {
 			res.status(400).json({ message: error instanceof Error ? error.message : "Ungültige Eingabe" });

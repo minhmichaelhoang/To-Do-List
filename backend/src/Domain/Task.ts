@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import { today } from "shared";
 
 /**
  * Domain entity. Kern der hexagonalen Architektur – kennt weder Ports noch
@@ -21,6 +22,7 @@ export class Task {
 		private _projectId: string,
 		private _date?: string,
 		private _time?: string,
+		private _duration?: number,
 		id: string = randomUUID() // Attribut ist ein Default-Wert und  wird nicht als Parameter übergeben, daher ist das am Ende
 	) {
 		Task.assertValidTitle(_title);
@@ -72,6 +74,15 @@ export class Task {
 		this._time = time;
 	}
 
+	/** Dauer in Minuten, optional. */
+	get duration() {
+		return this._duration;
+	}
+
+	set duration(duration: number | undefined) {
+		this._duration = duration;
+	}
+
 	/**
 	 * Liefert das effektive Datum für eine Eingabe: das übergebene `date`,
 	 * oder – falls nur `time` gesetzt ist – das heutige Datum, da eine
@@ -81,7 +92,7 @@ export class Task {
 		if (date) {
 			return date;
 		}
-		return time ? Task.today() : undefined;
+		return time ? today() : undefined;
 	}
 
 	/**
@@ -98,24 +109,16 @@ export class Task {
 		}
 
 		if (date && !time) {
-			if (new Date(`${date}T00:00:00`) < new Date(`${Task.today()}T00:00:00`)) {
+			if (new Date(`${date}T00:00:00`) < new Date(`${today()}T00:00:00`)) {
 				throw new Error("Das Datum darf nicht in der Vergangenheit liegen.");
 			}
 			return;
 		}
 
-		const effectiveDate = date ?? Task.today();
+		const effectiveDate = date ?? today();
 		if (new Date(`${effectiveDate}T${time}`) < new Date()) {
 			throw new Error("Datum/Uhrzeit dürfen nicht in der Vergangenheit liegen.");
 		}
-	}
-
-	private static today(): string {
-		const now = new Date();
-		const year = now.getFullYear();
-		const month = String(now.getMonth() + 1).padStart(2, "0");
-		const day = String(now.getDate()).padStart(2, "0");
-		return `${year}-${month}-${day}`;
 	}
 
 	private static assertValidTitle(title: string): void {

@@ -7,6 +7,8 @@ interface TaskFields {
 	date?: string;
 	/** Uhrzeit (HH:mm), optional. */
 	time?: string;
+	/** Dauer in Minuten, optional. */
+	duration?: number;
 }
 
 /**

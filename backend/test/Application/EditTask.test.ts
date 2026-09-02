@@ -30,4 +30,26 @@ describe("EditTask", () => {
 		expect(updated.Description).toBe("Neue Beschreibung");
 		expect(updated.projectId).toBe(neuesProjekt?.id);
 	});
+
+	it("überschreibt duration eines vorhandenen Tasks", async () => {
+		const taskRepository = new InMemoryTaskRepository();
+		const projectRepository = new InMemoryProjectRepository();
+		const findOrCreateProject = new FindOrCreateProject(projectRepository);
+		const addTask = new AddTask(taskRepository, findOrCreateProject);
+		const editTask = new EditTask(taskRepository, findOrCreateProject);
+
+		await addTask.execute({ title: "Titel", description: "Beschreibung", project: "Projekt", duration: 30 });
+		const [task] = await taskRepository.findAll();
+
+		await editTask.execute({
+			id: task.id,
+			title: "Titel",
+			description: "Beschreibung",
+			project: "Projekt",
+			duration: 120,
+		});
+
+		const [updated] = await taskRepository.findAll();
+		expect(updated.duration).toBe(120);
+	});
 });

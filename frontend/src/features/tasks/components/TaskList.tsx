@@ -1,4 +1,4 @@
-import {TaskItem} from "@/features/tasks/components/TaskItem.tsx";
+import {TaskItem} from "@/features/tasks/components/TaskList/TaskItem.tsx";
 import type {TaskDto} from "shared";
 
 interface TaskListProps {

@@ -1,21 +1,27 @@
 import {useState} from "react";
 import {Modal, type ModalProps} from "@/shared/components/Modal.tsx";
+import { formatIsoDate } from "shared";
 
 interface CalendarModalProps extends Pick<ModalProps, "open" | "onClose"> {
-	// TODO ergänzen
+	/** Aktuell gewähltes Datum (YYYY-MM-DD) – kontrollierter Wert, gehört dem Aufrufer (`CreateTaskModal`/`ViewTaskModal`), nicht diesem Modal. */
+	date: string;
+	/** Aktuell gewählte Uhrzeit (HH:mm) – kontrollierter Wert, gehört dem Aufrufer. */
+	time: string | undefined;
+	/** Aktuell gewählte Dauer in Minuten – kontrollierter Wert, gehört dem Aufrufer. */
+	duration: number | undefined;
+	/** Wird bei Klick auf einen Tag aufgerufen, meldet das neue Datum nach oben statt es selbst zu halten. */
+	onDateChange: (date: string) => void;
+	/** Wird bei Änderung der Uhrzeit aufgerufen, meldet die neue Uhrzeit nach oben statt sie selbst zu halten. */
+	onTimeChange: (time: string) => void;
+	/** Wird bei Änderung der Dauer aufgerufen, meldet die neue Dauer nach oben statt sie selbst zu halten. */
+	onDurationChange: (duration: number) => void;
 }
-
-const CUR_YEAR: number = new Date().getFullYear();
-const CUR_MONTH: number = new Date().getMonth() + 1;
 
 const YEARS_RANGE = 6;
 const CUR_YEAR_OFFSET = 0;
-
 const MONTHS_IN_YEAR = 12;
-
 const DAYS_INITIALS = ["M", "T", "W", "T", "F", "S", "S"];
 const DAYS_IN_WEEK = 7;
-
 const MAX_DURATION_IN_MINUTES = 240;
 
 function generateYearOptions(year: number): Array<{value: number}> {
@@ -45,11 +51,6 @@ function generateMonthOptions() {
 function adjustDayOfWeek(day: number): number {
 	if (day === 0) day = 7;
 	return day;
-}
-
-/** "YYYY-MM-DD", zweistellig gepaddet – passend fürs `value` eines `<input type="date">`. */
-function formatDate(year: number, month: number, dateNumber: number): string {
-	return `${year}-${String(month).padStart(2, "0")}-${String(dateNumber).padStart(2, "0")}`;
 }
 
 /** Letzter Tag des angegebenen Kalendermonats (`month` ist 1-12) – `new Date(year, month, 0)` ist der Tag vor Tag 1 des Folgemonats, also der letzte Tag dieses Monats. */
@@ -111,26 +112,26 @@ function generateDurationOptions(): Array<{value: number; label: string}> {
 	)
 }
 
+
 /**
  * Kalender-Auswahl für Jahr/Monat/Tag/Uhrzeit/Dauer. Berechnet das
  * Tages-Grid über `getCalendarWeeks` (reine Funktion, kein `Date`-Mutieren)
  * und rendert es nur noch.
  */
-export function CalendarModal({open, onClose}: CalendarModalProps) {
+export function CalendarModal({open, onClose, date, time, duration, onDateChange, onTimeChange, onDurationChange}: CalendarModalProps) {
+	const CUR_YEAR: number = new Date().getFullYear();
+	const CUR_MONTH: number = new Date().getMonth() + 1;
+
 	const [year, setYear] = useState<number>(CUR_YEAR);
 	const [month, setMonth] = useState<number>(CUR_MONTH);
-	const [selectedDate, setSelectedDate] = useState<string>("No Date Selected");
-	const [startTime, setStartTime] = useState<string>();
-	const [duration, setDuration] = useState<string>();
-	//TODO const [isOpen, setIsOpen] = useState(false);
 
 	function handleDayClick(day: number) {
-		setSelectedDate(formatDate(year, month, day));
+		onDateChange(formatIsoDate(year, month, day));
 	}
 
 	return (
 		<Modal
-			open={true}
+			open={open}
 			onClose={onClose}
 			style={{
 				flexDirection: "column",
@@ -138,7 +139,7 @@ export function CalendarModal({open, onClose}: CalendarModalProps) {
 				maxWidth: "20rem"
 			}}
 		>
-			<strong>{selectedDate}</strong>
+			<strong>{date || "No Date Selected"}</strong>
 			<hr/>
 
 			<div style={{display: "flex", justifyContent: "space-between"}}>
@@ -194,17 +195,18 @@ export function CalendarModal({open, onClose}: CalendarModalProps) {
 
 			<input
 				type={"time"}
-				value={startTime}
-				onChange={(e) => setStartTime(e.target.value)}
+				value={time ?? ""}
+				onChange={(e) => onTimeChange(e.target.value)}
 			/>
 
 			<div style={{display: "flex", justifyContent: "space-between"}}>
 				<label htmlFor={'duration'}>Duration: </label>
 				<select
 					id="duration"
-					value={duration}
-					onChange={(e) => setDuration(e.target.value)}
+					value={duration ?? ""}
+					onChange={(e) => onDurationChange(Number(e.target.value))}
 				>
+					<option value="" disabled hidden></option>
 					{generateDurationOptions().map(({value, label}) => (
 						<option key={value} value={value}>{label}</option>
 					))}

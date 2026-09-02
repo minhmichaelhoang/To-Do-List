@@ -6,6 +6,8 @@ interface ButtonProps {
 	onMouseLeave?: () => void;
 	children?: ReactNode; // Optional property to allow developers to include another ReactNode or text on top of the button.
 	style?: CSSProperties;
+	/** Default `"button"`, damit ein `Button` innerhalb eines `<form>` nicht versehentlich als Submit-Trigger wirkt (das ist der native `<button>`-Default, sobald er in einem Formular liegt). Explizit `"submit"` setzen, wenn er wirklich submitten soll. */
+	type?: "button" | "submit";
 }
 
 /**
@@ -16,9 +18,10 @@ interface ButtonProps {
  * muss – und `CSSProperties` typisiert z.B. `position` bereits korrekt als
  * `"static" | "relative" | "absolute" | "fixed" | "sticky"` statt `string`.
  */
-export function Button({ onClick, onMouseEnter, onMouseLeave, children, style }: ButtonProps) {
+export function Button({ onClick, onMouseEnter, onMouseLeave, children, style, type = "button" }: ButtonProps) {
 	return (
 		<button
+			type={type}
 			onClick={onClick}
 			onMouseEnter={onMouseEnter}
 			onMouseLeave={onMouseLeave}

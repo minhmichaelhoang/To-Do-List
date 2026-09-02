@@ -1,14 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { Task } from "../../src/Domain/Task";
-
-/** Lokales (nicht UTC-) Datum als YYYY-MM-DD, passend zu `Task`s eigener Berechnung von "heute". */
-function todayLocal(): string {
-	const now = new Date();
-	const year = now.getFullYear();
-	const month = String(now.getMonth() + 1).padStart(2, "0");
-	const day = String(now.getDate()).padStart(2, "0");
-	return `${year}-${month}-${day}`;
-}
+import { today } from "shared";
 
 describe("Task.resolveDate", () => {
 	it("gibt undefined zurück, wenn weder Datum noch Uhrzeit gesetzt sind", () => {
@@ -20,7 +12,7 @@ describe("Task.resolveDate", () => {
 	});
 
 	it("setzt das heutige Datum ein, wenn nur eine Uhrzeit übergeben wird", () => {
-		expect(Task.resolveDate(undefined, "14:30")).toBe(todayLocal());
+		expect(Task.resolveDate(undefined, "14:30")).toBe(today());
 	});
 });
 
@@ -66,27 +58,45 @@ describe("Task Titellänge", () => {
 });
 
 describe("Task Setter", () => {
-	it("überschreibt Description, projectId, date und time", () => {
+	it("überschreibt Description, projectId, date, time und duration", () => {
 		const task = new Task("Titel", "Beschreibung", "project-id");
 
 		task.Description = "Neue Beschreibung";
 		task.projectId = "anderes-project-id";
 		task.date = "2099-01-01";
 		task.time = "10:00";
+		task.duration = 90;
 
 		expect(task.Description).toBe("Neue Beschreibung");
 		expect(task.projectId).toBe("anderes-project-id");
 		expect(task.date).toBe("2099-01-01");
 		expect(task.time).toBe("10:00");
+		expect(task.duration).toBe(90);
 	});
 
-	it("erlaubt, date und time wieder auf undefined zu setzen", () => {
-		const task = new Task("Titel", "Beschreibung", "project-id", "2099-01-01", "10:00");
+	it("erlaubt, date, time und duration wieder auf undefined zu setzen", () => {
+		const task = new Task("Titel", "Beschreibung", "project-id", "2099-01-01", "10:00", 90);
 
 		task.date = undefined;
 		task.time = undefined;
+		task.duration = undefined;
 
 		expect(task.date).toBeUndefined();
 		expect(task.time).toBeUndefined();
+		expect(task.duration).toBeUndefined();
+	});
+});
+
+describe("Task duration", () => {
+	it("übernimmt die im Konstruktor übergebene duration", () => {
+		const task = new Task("Titel", "Beschreibung", "project-id", "2099-01-01", "10:00", 60);
+
+		expect(task.duration).toBe(60);
+	});
+
+	it("ist undefined, wenn keine duration übergeben wird", () => {
+		const task = new Task("Titel", "Beschreibung", "project-id");
+
+		expect(task.duration).toBeUndefined();
 	});
 });

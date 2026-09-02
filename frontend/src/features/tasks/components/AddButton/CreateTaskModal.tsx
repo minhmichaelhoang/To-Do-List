@@ -3,6 +3,8 @@ import type { ModalProps } from "@/shared/components/Modal";
 import { useState } from "react";
 import type { ChangeEvent, SubmitEvent } from "react";
 import { useTasks } from "@/features/tasks/context/TasksContext";
+import {CalendarModal} from "@/features/tasks/components/CalendarModal.tsx";
+import {Button} from "@/shared/components/Button.tsx";
 
 interface CreateModalProps extends Pick<ModalProps, "open" | "onClose"> {}
 
@@ -21,6 +23,9 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 		const [project, setProject] = useState("");
 		const [date, setDate] = useState("");
 		const [time, setTime] = useState("");
+		const [duration, setDuration] = useState<number>();
+		const [isOpen, setIsOpen] = useState(false);
+		const [isHovered, setIsHovered] = useState(false);
 
 	function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
 		const value = e.target.value;
@@ -50,13 +55,14 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 	function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
 		e.preventDefault();
 
-		createTaskOptimistically({ title, description, project, date: date || undefined, time: time || undefined });
+		createTaskOptimistically({ title, description, project, date: date || undefined, time: time || undefined, duration });
 
 		setTitle("");
 		setDescription("");
 		setProject("");
 		setDate("");
 		setTime("");
+		setDuration(undefined);
 		onClose();
 	}
 
@@ -65,7 +71,6 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 			open={open} onClose={onClose}
 			style={{
 				width: "30rem",
-				height: "20rem",
 			}}
 		>
 			<form
@@ -103,17 +108,25 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 					onChange={e => handleProjectChange(e)}
 					style={{ width: "100%", boxSizing: "border-box" }}
 				/>
-				<input
-					type="date"
-					value={date}
-					onChange={e => setDate(e.target.value)}
-					style={{ width: "100%", boxSizing: "border-box" }}
-				/>
-				<input
-					type="time"
-					value={time}
-					onChange={e => setTime(e.target.value)}
-					style={{ width: "100%", boxSizing: "border-box" }}
+				<Button
+					onClick={() => setIsOpen(!isOpen)}
+					onMouseEnter={() => setIsHovered(true)}
+					onMouseLeave={() => setIsHovered(false)}
+					style={{
+						backgroundColor: isHovered
+						? "color-mix(in srgb, var(--accent) 80%, white)"
+						: "var(--accent)",
+					}}
+				>{date ? `${date}${time ? ` ${time}` : ""}` : "Add Date"}</Button>
+				<CalendarModal
+					open={isOpen}
+					onClose={() => setIsOpen(false)}
+					date={date}
+					time={time}
+					duration={duration}
+					onDateChange={setDate}
+					onTimeChange={setTime}
+					onDurationChange={setDuration}
 				/>
 				<button type="submit" style={{ alignSelf: "flex-end" }}>Submit</button>
 			</form>

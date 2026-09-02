@@ -25,7 +25,7 @@ export class AddTask {
 
 		const project = await this.findOrCreateProject.execute(data.project);
 
-		const task = new Task(data.title, data.description, project.id, date, data.time);
+		const task = new Task(data.title, data.description, project.id, date, data.time, data.duration);
 		return this.taskRepository.add(task);
 	}
 }

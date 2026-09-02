@@ -12,6 +12,7 @@ export default defineConfig({
 			// App.tsx/main.tsx/Server.ts/index.ts sind Composition Roots/
 			// Verdrahtung, keine Coverage-Pflicht.
 			include: [
+				"shared/src/**",
 				"backend/src/Domain/**",
 				"backend/src/Application/**",
 				"frontend/src/shared/components/**",
@@ -30,6 +31,13 @@ export default defineConfig({
 			},
 		},
 		projects: [
+			{
+				test: {
+					name: "shared",
+					environment: "node",
+					include: ["shared/test/**/*.test.ts"],
+				},
+			},
 			{
 				test: {
 					name: "backend",

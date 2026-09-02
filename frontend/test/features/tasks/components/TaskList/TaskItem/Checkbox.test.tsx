@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Checkbox } from "../../../../src/features/tasks/components/Checkbox";
-import { AllProviders } from "../../../TestProviders";
+import { Checkbox } from "../../../../../../src/features/tasks/components/TaskList/TaskItem/Checkbox";
+import { AllProviders } from "../../../../../TestProviders";
 
 afterEach(() => {
 	vi.unstubAllGlobals();

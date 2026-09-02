@@ -23,7 +23,7 @@ export class EditTask {
 
 		const project = await this.findOrCreateProject.execute(data.project);
 
-		const task = new Task(data.title, data.description, project.id, date, data.time, data.id);
+		const task = new Task(data.title, data.description, project.id, date, data.time, data.duration, data.id);
 		return this.taskRepository.edit(task);
 	}
 }

@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { CreateTaskModal } from "../../../../src/features/tasks/components/CreateTaskModal";
-import { AllProviders } from "../../../TestProviders";
+import { CreateTaskModal } from "../../../../../src/features/tasks/components/AddButton/CreateTaskModal";
+import { AllProviders } from "../../../../TestProviders";
 
 afterEach(() => {
 	vi.unstubAllGlobals();

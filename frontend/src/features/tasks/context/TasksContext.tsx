@@ -65,6 +65,7 @@ export function TasksProvider({ children }: { children: ReactNode }) {
 			project: resolveOptimisticProject(data.project, projects),
 			date: data.date,
 			time: data.time,
+			duration: data.duration,
 		};
 
 		setTasks((current) => [...current, optimisticTask]);
