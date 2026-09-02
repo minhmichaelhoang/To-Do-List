@@ -3,8 +3,7 @@ import {type ChangeEvent, type SubmitEvent, useEffect, useState} from "react";
 import { useTasks } from "@/features/tasks/context/TasksContext.tsx";
 import { useProjects } from "@/features/projects/context/ProjectsContext";
 import { updateTask } from "@/features/tasks/api/TaskApi";
-import { CalendarModal } from "@/features/tasks/components/CalendarModal.tsx";
-import { Button } from "@/shared/components/Button.tsx";
+import { AddDateButton } from "@/features/tasks/components/AddDateButton.tsx";
 import type { TaskDto } from "shared";
 
 interface TaskModalProps extends Pick<ModalProps, "open" | "onClose">{
@@ -32,8 +31,6 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 	const [date, setDate] = useState(task.date ?? "");
 	const [time, setTime] = useState(task.time ?? "");
 	const [duration, setDuration] = useState(task.duration);
-	const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-	const [isHovered, setIsHovered] = useState(false);
 	const [submitError, setSubmitError] = useState("");
 
 	useEffect(() => {
@@ -136,19 +133,7 @@ export function ViewTaskModal({open, onClose, task}:TaskModalProps) {
 					onChange={e => handleProjectChange(e)}
 					style={{ width: "100%", boxSizing: "border-box" }}
 				/>
-				<Button
-					onClick={() => setIsCalendarOpen(!isCalendarOpen)}
-					onMouseEnter={() => setIsHovered(true)}
-					onMouseLeave={() => setIsHovered(false)}
-					style={{
-						backgroundColor: isHovered
-						? "color-mix(in srgb, var(--accent) 80%, white)"
-						: "var(--accent)",
-					}}
-				>{date ? `${date}${time ? ` ${time}` : ""}` : "Add Date"}</Button>
-				<CalendarModal
-					open={isCalendarOpen}
-					onClose={() => setIsCalendarOpen(false)}
+				<AddDateButton
 					date={date}
 					time={time}
 					duration={duration}

@@ -3,8 +3,7 @@ import type { ModalProps } from "@/shared/components/Modal";
 import { useState } from "react";
 import type { ChangeEvent, SubmitEvent } from "react";
 import { useTasks } from "@/features/tasks/context/TasksContext";
-import {CalendarModal} from "@/features/tasks/components/CalendarModal.tsx";
-import {Button} from "@/shared/components/Button.tsx";
+import {AddDateButton} from "@/features/tasks/components/AddDateButton.tsx";
 
 interface CreateModalProps extends Pick<ModalProps, "open" | "onClose"> {}
 
@@ -24,8 +23,6 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 		const [date, setDate] = useState("");
 		const [time, setTime] = useState("");
 		const [duration, setDuration] = useState<number>();
-		const [isOpen, setIsOpen] = useState(false);
-		const [isHovered, setIsHovered] = useState(false);
 
 	function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
 		const value = e.target.value;
@@ -108,19 +105,7 @@ export function CreateTaskModal({ open, onClose }: CreateModalProps) {
 					onChange={e => handleProjectChange(e)}
 					style={{ width: "100%", boxSizing: "border-box" }}
 				/>
-				<Button
-					onClick={() => setIsOpen(!isOpen)}
-					onMouseEnter={() => setIsHovered(true)}
-					onMouseLeave={() => setIsHovered(false)}
-					style={{
-						backgroundColor: isHovered
-						? "color-mix(in srgb, var(--accent) 80%, white)"
-						: "var(--accent)",
-					}}
-				>{date ? `${date}${time ? ` ${time}` : ""}` : "Add Date"}</Button>
-				<CalendarModal
-					open={isOpen}
-					onClose={() => setIsOpen(false)}
+				<AddDateButton
 					date={date}
 					time={time}
 					duration={duration}
