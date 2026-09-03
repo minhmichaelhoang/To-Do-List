@@ -6,6 +6,11 @@
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
 		"skipLibCheck": true,
+		// shared/ hat bewusst keinen Build-Schritt: Node lädt die .ts-Quellen direkt und verlangt
+		// dafür explizite Dateiendungen in den Importen. Diese beiden Flags erlauben genau das und
+		// schreiben die Endung beim Emit nach .js um.
+		"allowImportingTsExtensions": true,
+		"rewriteRelativeImportExtensions": true,
 		"outDir": "dist"
 	},
 	"include": ["src"]
