@@ -11,9 +11,28 @@ import { Pool } from "pg";
 export class PostgreTaskRepository implements TaskRepository {
 	constructor(private readonly pool: Pool) {}
 
-	/** Einziger Ort, der die Spalten-Reihenfolge des `Task`-Konstruktors kennt – sonst müsste jede neue Spalte in jeder Query-Methode einzeln nachgezogen werden. */
+	/**
+	 * Einziger Ort, der die Spalten-Reihenfolge des `Task`-Konstruktors kennt –
+	 * sonst müsste jede neue Spalte in jeder Query-Methode einzeln nachgezogen
+	 * werden.
+	 *
+	 * Leere Spalten liefert `pg` als `null`, die Domain kennt für "nicht
+	 * gesetzt" aber nur `undefined`. Diese Übersetzung gehört in den Adapter:
+	 * `null` würde sonst an den Validierungen vorbeirutschen, die auf
+	 * `undefined` prüfen (`Number.isInteger(null)` ist `false`, ein `null`-
+	 * Repeat aus einer Altzeile hätte also fälschlich abgelehnt).
+	 */
 	private static toTask(row: any): Task {
-		return new Task(row.title, row.description, row.project_id, row.date, row.time, row.duration, row.repeat, row.id);
+		return new Task(
+			row.title,
+			row.description,
+			row.project_id,
+			row.date ?? undefined,
+			row.time ?? undefined,
+			row.duration ?? undefined,
+			row.repeat ?? undefined,
+			row.id,
+		);
 	}
 
 	async findAll(): Promise<Task[]> {
