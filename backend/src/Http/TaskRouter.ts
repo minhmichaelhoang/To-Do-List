@@ -4,6 +4,7 @@ import { ListTasks } from "../Application/ListTasks";
 import { AddTask } from "../Application/AddTask";
 import {DeleteTask} from "../Application/DeleteTask";
 import { EditTask } from "../Application/EditTask"
+import { CompleteTask } from "../Application/CompleteTask";
 import { Task } from "../Domain/Task";
 import { ProjectRepository } from "../Ports/ProjectRepository";
 
@@ -23,6 +24,7 @@ export function createTaskRouter(
 	addTask: AddTask,
 	deleteTask: DeleteTask,
 	editTask: EditTask,
+	completeTask: CompleteTask,
 	projectRepository: ProjectRepository,
 ): Router {
 	const router = Router();
@@ -72,6 +74,19 @@ export function createTaskRouter(
 			res.status(204).send();
 		} catch (error) {
 			res.status(400).json({ message: error instanceof Error ? error.message : "Ungültige Eingabe" });
+		}
+	})
+
+	// Eigene Route statt eines Flags am DELETE: Abhaken ist fachlich etwas anderes als Löschen
+	// (es kann eine Folgeaufgabe erzeugen), und beides über denselben Endpunkt zu steuern würde
+	// diese Unterscheidung verstecken.
+	router.post("/tasks/:id/complete", async (req, res) => {
+		const { id } = req.params;
+		try {
+			await completeTask.execute(id);
+			res.status(204).send();
+		} catch (error) {
+			res.status(400).json({ message: error instanceof Error ? error.message : "Aufgabe konnte nicht abgehakt werden" });
 		}
 	})
 

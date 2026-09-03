@@ -8,6 +8,8 @@ import { Task } from "../Domain/Task";
  */
 export interface TaskRepository {
 	findAll(): Promise<Task[]>;
+	/** Liefert `undefined`, wenn es keinen Task mit dieser ID gibt – Aufrufer entscheiden selbst, ob das ein Fehler ist. */
+	findById(id: string): Promise<Task | undefined>;
 	findByTitleContains(letters: string): Promise<Task[]>; // noch nicht in Verwendung
 	add(task: Task): Promise<void>;
 	delete(id: string): Promise<void>;

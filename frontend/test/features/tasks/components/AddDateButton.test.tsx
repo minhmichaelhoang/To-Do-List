@@ -129,7 +129,7 @@ describe("AddDateButton", () => {
 
 		render(
 			<AddDateButton
-				date=""
+				date="2099-01-01"
 				time={undefined}
 				duration={undefined}
 				repeat={undefined}
@@ -140,7 +140,7 @@ describe("AddDateButton", () => {
 			/>,
 		);
 
-		await userEvent.click(screen.getByText("Add Date"));
+		await userEvent.click(screen.getByText("2099-01-01"));
 		fireEvent.change(screen.getByLabelText("Repeat (days):"), { target: { value: "7" } });
 
 		expect(onRepeatChange).toHaveBeenCalledWith(7);
@@ -151,7 +151,7 @@ describe("AddDateButton", () => {
 
 		render(
 			<AddDateButton
-				date=""
+				date="2099-01-01"
 				time={undefined}
 				duration={undefined}
 				repeat={undefined}
@@ -162,7 +162,7 @@ describe("AddDateButton", () => {
 			/>,
 		);
 
-		await userEvent.click(screen.getByText("Add Date"));
+		await userEvent.click(screen.getByText("2099-01-01"));
 		fireEvent.change(screen.getByLabelText("Repeat (days):"), { target: { value: "0" } });
 
 		expect(onRepeatChange).toHaveBeenCalledWith(0);
@@ -173,7 +173,7 @@ describe("AddDateButton", () => {
 
 		render(
 			<AddDateButton
-				date=""
+				date="2099-01-01"
 				time={undefined}
 				duration={undefined}
 				repeat={5}
@@ -184,7 +184,7 @@ describe("AddDateButton", () => {
 			/>,
 		);
 
-		await userEvent.click(screen.getByText("Add Date"));
+		await userEvent.click(screen.getByText("2099-01-01"));
 		fireEvent.change(screen.getByLabelText("Repeat (days):"), { target: { value: "" } });
 
 		expect(onRepeatChange).toHaveBeenCalledWith(undefined);
@@ -195,7 +195,7 @@ describe("AddDateButton", () => {
 
 		render(
 			<AddDateButton
-				date=""
+				date="2099-01-01"
 				time={undefined}
 				duration={undefined}
 				repeat={undefined}
@@ -206,7 +206,7 @@ describe("AddDateButton", () => {
 			/>,
 		);
 
-		await userEvent.click(screen.getByText("Add Date"));
+		await userEvent.click(screen.getByText("2099-01-01"));
 		fireEvent.change(screen.getByLabelText("Repeat (days):"), { target: { value: "-1" } });
 
 		expect(onRepeatChange).not.toHaveBeenCalled();
@@ -217,7 +217,7 @@ describe("AddDateButton", () => {
 
 		render(
 			<AddDateButton
-				date=""
+				date="2099-01-01"
 				time={undefined}
 				duration={undefined}
 				repeat={undefined}
@@ -228,9 +228,47 @@ describe("AddDateButton", () => {
 			/>,
 		);
 
-		await userEvent.click(screen.getByText("Add Date"));
+		await userEvent.click(screen.getByText("2099-01-01"));
 		fireEvent.change(screen.getByLabelText("Repeat (days):"), { target: { value: "1.5" } });
 
 		expect(onRepeatChange).not.toHaveBeenCalled();
+	});
+
+	it("sperrt das Repeat-Feld, solange kein Datum gewählt ist", async () => {
+		render(
+			<AddDateButton
+				date=""
+				time={undefined}
+				duration={undefined}
+				repeat={undefined}
+				onDateChange={noop}
+				onTimeChange={noop}
+				onDurationChange={noop}
+				onRepeatChange={noop}
+			/>,
+		);
+
+		await userEvent.click(screen.getByText("Add Date"));
+
+		expect(screen.getByLabelText("Repeat (days):")).toBeDisabled();
+	});
+
+	it("gibt das Repeat-Feld frei, sobald ein Datum gesetzt ist", async () => {
+		render(
+			<AddDateButton
+				date="2099-01-01"
+				time={undefined}
+				duration={undefined}
+				repeat={undefined}
+				onDateChange={noop}
+				onTimeChange={noop}
+				onDurationChange={noop}
+				onRepeatChange={noop}
+			/>,
+		);
+
+		await userEvent.click(screen.getByText("2099-01-01"));
+
+		expect(screen.getByLabelText("Repeat (days):")).toBeEnabled();
 	});
 });

@@ -41,6 +41,18 @@ export async function updateTask(data: EditTaskDto): Promise<void> {
 	}
 }
 
+/**
+ * Hakt einen Task ab. Anders als `deleteTask` kann das serverseitig zusätzlich
+ * die nächste Wiederholung anlegen – deshalb ein eigener Endpunkt und nicht
+ * einfach ein `DELETE`.
+ */
+export async function completeTask(id: string): Promise<void> {
+	const response = await fetch(`${BASE_URL}/${id}/complete`, { method: "POST" });
+	if (!response.ok) {
+		throw new Error(await extractErrorMessage(response, "Fehler beim Abhaken der Aufgabe"));
+	}
+}
+
 /** Löscht einen Task per ID. */
 export async function deleteTask(id: string): Promise<void> {
 	const response = await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });

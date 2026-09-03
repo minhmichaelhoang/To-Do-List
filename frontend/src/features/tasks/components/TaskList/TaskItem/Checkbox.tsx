@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import { Button } from "@/shared/components/Button.tsx"
 import {useState} from "react";
 import { useTasks } from "@/features/tasks/context/TasksContext";
-import { deleteTask } from "@/features/tasks/api/TaskApi";
+import { completeTask } from "@/features/tasks/api/TaskApi";
 
 interface CheckboxProps {
 	taskId: string;
@@ -10,8 +10,10 @@ interface CheckboxProps {
 }
 
 /**
- * Ein Button, der eine Aufgabe nach ID löscht und danach die Task-Liste
- * über den `TasksContext` neu lädt.
+ * Ein Button, der eine Aufgabe abhakt und danach die Task-Liste über den
+ * `TasksContext` neu lädt. Ob dabei nur gelöscht wird oder zusätzlich die
+ * nächste Wiederholung entsteht, entscheidet der Use Case `CompleteTask` im
+ * Backend – diese Komponente kennt `repeat` bewusst gar nicht.
  *
  * @param props die Property
  * @param props.taskId die ID der Task
@@ -19,14 +21,14 @@ interface CheckboxProps {
  */
 export function Checkbox({taskId, style}: CheckboxProps) {
 	const { loadTasks } = useTasks();
-	const [deleteError, setDeleteError] = useState("");
+	const [completeError, setCompleteError] = useState("");
 
 	async function handleClick() {
 		try {
-			await deleteTask(taskId);
+			await completeTask(taskId);
 			loadTasks();
 		} catch (error) {
-			setDeleteError(error instanceof Error ? error.message : "Unbekannter Fehler");
+			setCompleteError(error instanceof Error ? error.message : "Unbekannter Fehler");
 		}
 	}
 
@@ -45,7 +47,7 @@ export function Checkbox({taskId, style}: CheckboxProps) {
 					...style,
 				}}
 			/>
-			{deleteError && <p style={{ color: "red" }}>{deleteError}</p>}
+			{completeError && <p style={{ color: "red" }}>{completeError}</p>}
 		</>
 	);
 }

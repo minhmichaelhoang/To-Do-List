@@ -66,10 +66,19 @@ describe("AddTask", () => {
 	it("übernimmt ein gesetztes repeat unverändert", async () => {
 		const { taskRepository, addTask } = setup();
 
-		await addTask.execute({ title: "Titel", description: "Beschreibung", project: "Projekt", repeat: 7 });
+		await addTask.execute({ title: "Titel", description: "Beschreibung", project: "Projekt", date: "2099-01-01", repeat: 7 });
 
 		const [task] = await taskRepository.findAll();
 		expect(task.repeat).toBe(7);
+	});
+
+	it("verwirft ein repeat ohne Datum, legt den Task aber trotzdem an", async () => {
+		const { taskRepository, addTask } = setup();
+
+		await addTask.execute({ title: "Titel", description: "Beschreibung", project: "Projekt", repeat: 7 });
+
+		const [task] = await taskRepository.findAll();
+		expect(task.repeat).toBeUndefined();
 	});
 
 	it("lehnt ein negatives repeat ab", async () => {

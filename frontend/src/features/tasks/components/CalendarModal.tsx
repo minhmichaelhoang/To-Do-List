@@ -193,6 +193,7 @@ export function CalendarModal({open, onClose, date, time, duration, repeat, onDa
 				</select>
 			</div>
 
+			{/* Ohne Datum gibt es keinen Termin, den eine Wiederholung weiterschieben könnte – das Feld wird deshalb erst mit gewähltem Tag bedienbar (das Backend verwirft ein datumsloses `repeat` zusätzlich still, siehe `Task`). */}
 			<div style={{display: "flex", justifyContent: "space-between"}}>
 				<label htmlFor={'repeat'}>Repeat (days): </label>
 				<input
@@ -202,6 +203,8 @@ export function CalendarModal({open, onClose, date, time, duration, repeat, onDa
 					step={1}
 					value={repeat ?? ""}
 					onChange={handleRepeatChange}
+					disabled={!date}
+					title={date ? undefined : "Erst ein Datum wählen"}
 				/>
 			</div>
 		</Modal>

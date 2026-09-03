@@ -11,13 +11,25 @@ import { Pool } from "pg";
 export class PostgreTaskRepository implements TaskRepository {
 	constructor(private readonly pool: Pool) {}
 
+	/** Einziger Ort, der die Spalten-Reihenfolge des `Task`-Konstruktors kennt – sonst müsste jede neue Spalte in jeder Query-Methode einzeln nachgezogen werden. */
+	private static toTask(row: any): Task {
+		return new Task(row.title, row.description, row.project_id, row.date, row.time, row.duration, row.repeat, row.id);
+	}
+
 	async findAll(): Promise<Task[]> {
 		const result = await this.pool.query(
 			"SELECT * " + "FROM task " + "ORDER BY title ASC;",
 		);
-		return result.rows.map(
-			(row) => new Task(row.title, row.description, row.project_id, row.date, row.time, row.duration, row.repeat, row.id),
+		return result.rows.map(PostgreTaskRepository.toTask);
+	}
+
+	async findById(id: string): Promise<Task | undefined> {
+		const result = await this.pool.query(
+			"SELECT * " + "FROM task " + "WHERE id = $1;",
+			[id],
 		);
+		const row = result.rows[0];
+		return row ? PostgreTaskRepository.toTask(row) : undefined;
 	}
 
 	async findByTitleContains(letters: string): Promise<Task[]> {
@@ -28,9 +40,7 @@ export class PostgreTaskRepository implements TaskRepository {
 				"ORDER BY title ASC;",
 			[`%${letters}%`],
 		);
-		return result.rows.map(
-			(row) => new Task(row.title, row.description, row.project_id, row.date, row.time, row.duration, row.repeat, row.id),
-		);
+		return result.rows.map(PostgreTaskRepository.toTask);
 	}
 
 	async add(task: Task): Promise<void> {

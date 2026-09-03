@@ -12,6 +12,10 @@ import { Task } from "../Domain/Task";
 export class InMemoryTaskRepository implements TaskRepository {
 	constructor(private readonly tasks: Task[] = []) {}
 
+	async findById(id: string): Promise<Task | undefined> {
+		return this.tasks.find((task) => task.id === id);
+	}
+
 	async findByTitleContains(letters: string): Promise<Task[]> {
 		return this.tasks.filter((task) => task.title.includes(letters));
 	}

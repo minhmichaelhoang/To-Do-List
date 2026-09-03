@@ -60,7 +60,7 @@ describe("EditTask", () => {
 		const addTask = new AddTask(taskRepository, findOrCreateProject);
 		const editTask = new EditTask(taskRepository, findOrCreateProject);
 
-		await addTask.execute({ title: "Titel", description: "Beschreibung", project: "Projekt", repeat: 3 });
+		await addTask.execute({ title: "Titel", description: "Beschreibung", project: "Projekt", date: "2099-01-01", repeat: 3 });
 		const [task] = await taskRepository.findAll();
 
 		await editTask.execute({
@@ -68,10 +68,34 @@ describe("EditTask", () => {
 			title: "Titel",
 			description: "Beschreibung",
 			project: "Projekt",
+			date: "2099-01-01",
 			repeat: 14,
 		});
 
 		const [updated] = await taskRepository.findAll();
 		expect(updated.repeat).toBe(14);
+	});
+
+	it("entfernt das repeat, wenn beim Bearbeiten das Datum wegfällt", async () => {
+		const taskRepository = new InMemoryTaskRepository();
+		const projectRepository = new InMemoryProjectRepository();
+		const findOrCreateProject = new FindOrCreateProject(projectRepository);
+		const addTask = new AddTask(taskRepository, findOrCreateProject);
+		const editTask = new EditTask(taskRepository, findOrCreateProject);
+
+		await addTask.execute({ title: "Titel", description: "Beschreibung", project: "Projekt", date: "2099-01-01", repeat: 3 });
+		const [task] = await taskRepository.findAll();
+
+		await editTask.execute({
+			id: task.id,
+			title: "Titel",
+			description: "Beschreibung",
+			project: "Projekt",
+			repeat: 3,
+		});
+
+		const [updated] = await taskRepository.findAll();
+		expect(updated.date).toBeUndefined();
+		expect(updated.repeat).toBeUndefined();
 	});
 });

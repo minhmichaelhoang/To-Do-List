@@ -29,6 +29,7 @@ import { createTaskRouter } from "./Http/TaskRouter";
 import { createProjectRouter } from "./Http/ProjectRouter";
 import {DeleteTask} from "./Application/DeleteTask";
 import {EditTask} from "./Application/EditTask";
+import {CompleteTask} from "./Application/CompleteTask";
 
 async function createRepositories(): Promise<{ taskRepository: TaskRepository; projectRepository: ProjectRepository }> {
 	if (process.env.DATABASE_URL) {
@@ -67,6 +68,7 @@ async function main() {
 	const addTask = new AddTask(taskRepository, findOrCreateProject);
 	const deleteTask = new DeleteTask(taskRepository);
 	const editTask = new EditTask(taskRepository, findOrCreateProject);
+	const completeTask = new CompleteTask(taskRepository);
 
 	const app = express();
 	app.use(cors()); // erlaubt Requests vom Vite-Dev-Server (andere Origin: Port 5173 statt 3000)
@@ -78,7 +80,7 @@ async function main() {
 		res.json({ status: "ok" });
 	});
 
-	app.use(createTaskRouter(listTasks, addTask, deleteTask, editTask, projectRepository));
+	app.use(createTaskRouter(listTasks, addTask, deleteTask, editTask, completeTask, projectRepository));
 	app.use(createProjectRouter(listProjects));
 
 	const port = process.env.PORT ? Number(process.env.PORT) : 3000;

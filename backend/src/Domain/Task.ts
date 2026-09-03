@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { today } from "shared";
+import { addDays, today } from "shared";
 
 /**
  * Domain entity. Kern der hexagonalen Architektur – kennt weder Ports noch
@@ -28,6 +28,7 @@ export class Task {
 	) {
 		Task.assertValidTitle(_title);
 		Task.assertValidRepeat(_repeat);
+		this._repeat = Task.withoutRepeatWhenUndated(_repeat, _date);
 		this._id = id;
 	}
 
@@ -66,6 +67,7 @@ export class Task {
 
 	set date(date: string | undefined) {
 		this._date = date;
+		this._repeat = Task.withoutRepeatWhenUndated(this._repeat, date);
 	}
 
 	get time() {
@@ -85,14 +87,41 @@ export class Task {
 		this._duration = duration;
 	}
 
-	/** Wiederholungsintervall in Tagen, optional. `0` oder `undefined` bedeuten "keine Wiederholung". */
+	/** Wiederholungsintervall in Tagen, optional. `0` oder `undefined` bedeuten "keine Wiederholung". Ohne gesetztes `date` immer `undefined`, siehe `withoutRepeatWhenUndated`. */
 	get repeat() {
 		return this._repeat;
 	}
 
 	set repeat(repeat: number | undefined) {
 		Task.assertValidRepeat(repeat);
-		this._repeat = repeat;
+		this._repeat = Task.withoutRepeatWhenUndated(repeat, this._date);
+	}
+
+	/**
+	 * Liefert die Folgeaufgabe eines wiederkehrenden Tasks: eine neue `Task`
+	 * (eigene ID) mit denselben Eigenschaften – inklusive Uhrzeit, Dauer und
+	 * demselben `repeat`, damit die Kette weiterläuft –, deren Datum um
+	 * `repeat` Tage weitergeschoben ist. Wird so oft weitergeschoben, bis das
+	 * Ergebnis nicht mehr in der Vergangenheit liegt: so bleibt der
+	 * ursprüngliche Rhythmus erhalten (bei `repeat = 7` z.B. derselbe
+	 * Wochentag), auch wenn eine überfällige Aufgabe erst spät abgehakt wird,
+	 * und die Folgeaufgabe scheitert nie an `assertNotInPast`.
+	 *
+	 * Gibt `undefined` zurück, wenn sich der Task nicht wiederholt – also bei
+	 * `repeat` nicht gesetzt oder `0` (fachlich "keine Wiederholung"). Die
+	 * Schleife terminiert immer, da `repeat` an dieser Stelle mindestens 1 ist.
+	 */
+	nextOccurrence(): Task | undefined {
+		if (!this._repeat || !this._date) {
+			return undefined;
+		}
+
+		let date = addDays(this._date, this._repeat);
+		while (Task.isInPast(date, this._time)) {
+			date = addDays(date, this._repeat);
+		}
+
+		return new Task(this._title, this._description, this._projectId, date, this._time, this._duration, this._repeat);
 	}
 
 	/**
@@ -116,21 +145,35 @@ export class Task {
 	 * für jedes erneute Laden.
 	 */
 	static assertNotInPast(date?: string, time?: string): void {
-		if (!date && !time) {
+		if (!Task.isInPast(date, time)) {
 			return;
+		}
+
+		throw new Error(
+			time
+				? "Datum/Uhrzeit dürfen nicht in der Vergangenheit liegen."
+				: "Das Datum darf nicht in der Vergangenheit liegen.",
+		);
+	}
+
+	/**
+	 * Prüft, ob Datum/Uhrzeit in der Vergangenheit liegen. Ohne Uhrzeit zählt
+	 * der gesamte Tag als noch nicht vergangen (Vergleich auf Tagesebene),
+	 * mit Uhrzeit wird auf den Zeitpunkt genau verglichen. Als Prädikat
+	 * ausgelagert, weil `nextOccurrence` dieselbe Regel in einer Schleife
+	 * auswerten muss – ein `throw` wäre dort das falsche Werkzeug.
+	 */
+	static isInPast(date?: string, time?: string): boolean {
+		if (!date && !time) {
+			return false;
 		}
 
 		if (date && !time) {
-			if (new Date(`${date}T00:00:00`) < new Date(`${today()}T00:00:00`)) {
-				throw new Error("Das Datum darf nicht in der Vergangenheit liegen.");
-			}
-			return;
+			return new Date(`${date}T00:00:00`) < new Date(`${today()}T00:00:00`);
 		}
 
 		const effectiveDate = date ?? today();
-		if (new Date(`${effectiveDate}T${time}`) < new Date()) {
-			throw new Error("Datum/Uhrzeit dürfen nicht in der Vergangenheit liegen.");
-		}
+		return new Date(`${effectiveDate}T${time}`) < new Date();
 	}
 
 	private static assertValidTitle(title: string): void {
@@ -153,5 +196,16 @@ export class Task {
 		if (!Number.isInteger(repeat) || repeat < 0) {
 			throw new Error("Repeat muss eine nicht-negative Ganzzahl sein.");
 		}
+	}
+
+	/**
+	 * Ein Wiederholungsintervall ohne Datum ist fachlich bedeutungslos – es
+	 * gibt keinen Termin, den es weiterschieben könnte. Ein solches `repeat`
+	 * wird deshalb still verworfen statt abgelehnt: es ist kein Fehler des
+	 * Nutzers, sondern schlicht ein Wert ohne Bedeutung, und ein `throw`
+	 * würde ein ansonsten gültiges Anlegen/Bearbeiten scheitern lassen.
+	 */
+	private static withoutRepeatWhenUndated(repeat: number | undefined, date: string | undefined): number | undefined {
+		return date ? repeat : undefined;
 	}
 }

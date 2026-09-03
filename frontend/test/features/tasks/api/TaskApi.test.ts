@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createTask, deleteTask, getTasks, updateTask } from "../../../../src/features/tasks/api/TaskApi";
+import { completeTask, createTask, deleteTask, getTasks, updateTask } from "../../../../src/features/tasks/api/TaskApi";
 
 afterEach(() => {
 	vi.unstubAllGlobals();
@@ -78,5 +78,28 @@ describe("TaskApi", () => {
 			"http://localhost:3000/tasks/abc-123",
 			expect.objectContaining({ method: "DELETE" }),
 		);
+	});
+
+	it("completeTask schickt POST an den complete-Endpunkt der Task-ID", async () => {
+		const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 204 });
+		vi.stubGlobal("fetch", fetchMock);
+
+		await completeTask("abc-123");
+
+		expect(fetchMock).toHaveBeenCalledWith(
+			"http://localhost:3000/tasks/abc-123/complete",
+			expect.objectContaining({ method: "POST" }),
+		);
+	});
+
+	it("completeTask wirft mit der Fehlermeldung des Backends", async () => {
+		const fetchMock = vi.fn().mockResolvedValue({
+			ok: false,
+			status: 400,
+			json: async () => ({ message: "Aufgabe konnte nicht abgehakt werden" }),
+		});
+		vi.stubGlobal("fetch", fetchMock);
+
+		await expect(completeTask("abc-123")).rejects.toThrow("Aufgabe konnte nicht abgehakt werden");
 	});
 });
